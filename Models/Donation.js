@@ -1,6 +1,4 @@
 const mongoose = require('mongoose')
-const date=require("date-fns")
-
 const DonationSchema = new mongoose.Schema({
   donationAmount: {
     type: Number,
@@ -17,22 +15,23 @@ const DonationSchema = new mongoose.Schema({
     required: true
   },
   Day: {
-    type: String,
+    type: Number,
     enum: [15, 14],
     required: true
   },
   notes: {
     type: String,
     required: false,
-    trim: true
+    trim: true,
+    default: ""
   },
-  donor: {
+  donorUserName: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Donor', 
     required: true
+  },
+  event:{
+    type:String
   }
-})
-DonationSchema.virtual('formattedDonationDate').get(function () {
-  return format(this.donationDate, 'dd/MM/yyyy'); // החזרת התאריך בפורמט מותאם
 })
 module.exports= mongoose.model('Donation', DonationSchema);

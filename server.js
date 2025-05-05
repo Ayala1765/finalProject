@@ -15,6 +15,8 @@ app.get("/",(req,res)=>{res.send("this is the home page")})
 
 app.use("/donor",require("./routes/donors"))
 app.use("/donation",require("./routes/donations"))
+app.use("/event",require("./routes/events"))
+app.use("/user",require("./routes/users"))
 
 mongoose.connection.once('open',()=>{app.listen(PORT,()=>{console.log(`the port is ${PORT}`)})})
 mongoose.connection.on('error',err=>{})

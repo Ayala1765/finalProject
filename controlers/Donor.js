@@ -1,11 +1,9 @@
-const Donor = require("../Models/Donors")
-
-
+const Donor = require("../Models/Donor")
 const addDonor = async (req, res) => {
-    const { name, email, phone, donations } = req.body
-    if (!name && !email)
-        return res.status(400).json({ messange: 'name & email is must files' })
-    const donor = await Donor.create({ name: name, email: email, phone: phone, donations: donations })
+    const { userName,name, email, phone, donations } = req.body
+    if (!userName && !email)
+        return res.status(400).json({ messange: 'userName & email is must files' })
+    const donor = await Donor.create({ userName:userName,name: name, email: email, phone: phone, donations: donations })
     res.json(donor)
 }
 const getAllDonors =async (req,res)=>{
@@ -21,33 +19,41 @@ const getAllDonors =async (req,res)=>{
         res.status(500).json({ message: "Internal server error" });
     }
 }
-
-
-
-
-
-
-const updateDonor = async (req, res) => {
+const deleteDonor = async (req, res) => {
     try {
-        // קבלת הנתונים מהבקשה
-        const { name, userName, email, phone, _id } = req.body;
-
+        const { _id } = req.body;
         if (!_id) {
             res.status(400).json({ message: "Donor ID is required" });
         }
-
-
-
-        const danotions = await Donation.findById(_id).exec()
-        danotions.donationAmount = donationAmount
-        danotions.coinType = coinType
-        danotions.Day = Day
-        danotions.notes = notes
-        await danotions.save()
+        const donor = await Donor.findById(_id)
+        await donor.deleteOne()
         res.send("succses")
     } catch (error) {
-        console.error("Error in addDonation:", error.message);
+        console.error("Error in deleteDonor:", error.message);
         res.status(500).json({ message: "Internal server error" });
     }
 }
-module.exports = { addDonor,getAllDonors,updateDonor }
+
+const updateDonor = async (req, res) => {
+    try {
+        const { userName, name, email, phone } = req.body;
+        if (!userName) {
+            return res.status(400).json({ message: "Donor username is required" });
+        }
+        const donor = await Donor.findOne({ userName }).exec();
+
+        if (!donor) {
+            return res.status(404).json({ message: "Donor not found" });
+        }
+        donor.name = name || donor.name;
+        donor.email = email || donor.email;
+        donor.phone = phone || donor.phone;
+        await donor.save();
+
+        res.json(donor);
+    } catch (error) {
+        console.error("Error in updateDonor:", error.message);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+module.exports = { addDonor,getAllDonors,updateDonor ,deleteDonor}
