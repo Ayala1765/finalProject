@@ -1,9 +1,10 @@
-const express=require("express")
-const router=express.Router()
-const Donor=require("../controlers/Donor")
-router.post("/",Donor.addDonor)
-router.get("/",Donor.getAllDonors)
-router.put("/",Donor.updateDonor)
-router.delete("/",Donor.deleteDonor)
-module.exports=router
+const express = require("express")
+const router = express.Router()
+const Donor = require("../controllers/Donor")
+const verifyJWT = require("../middleware/verifyJWT")
+router.post("/",verifyJWT, Donor.addDonor)
+router.get("/",verifyJWT, Donor.getAllDonors)
+router.put("/",verifyJWT, Donor.updateDonor)
+router.delete("/",verifyJWT, Donor.deleteDonor)
+module.exports = router
 

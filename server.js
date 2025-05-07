@@ -11,13 +11,11 @@ app.use(cors(corsOptions))
 app.use(express.json())
 app.use(express.static("public"))
 app.get("/",(req,res)=>{res.send("this is the home page")})
-
-
 app.use("/donor",require("./routes/donors"))
 app.use("/donation",require("./routes/donations"))
 app.use("/event",require("./routes/events"))
-app.use("/user",require("./routes/users"))
-
+app.use("/auth",require("./routes/auth"))
+app.use("/creditDetails",require("./routes/creditDetails"))
 mongoose.connection.once('open',()=>{app.listen(PORT,()=>{console.log(`the port is ${PORT}`)})})
 mongoose.connection.on('error',err=>{})
 

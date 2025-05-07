@@ -5,10 +5,19 @@ const DonorSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
-  userName: {
+  username: {
     type: String,
     required: true,
-    trim: true
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  role: {
+    type: String,
+    enum: ['user', 'manager'],
+    default: 'user',
   },
   email: {
     type: String,
