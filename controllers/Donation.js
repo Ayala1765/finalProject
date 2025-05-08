@@ -1,19 +1,12 @@
 const Donation = require("../Models/Donation")
-const Donor = require("../Models/Donor")
 const Event = require("../Models/Event")
+const Donor =require("../Models/Donor")// mongoose.models.Donor || mongoose.model('Donor', DonorSchema);
 const addDonationToDonor = async (donationData, donorUserName) => {
-    try {
-
-        const donor = await Donor.findOne({ userName: donorUserName }).exec()
-
+      try {
+        const donor = await Donor.findOne({ username: donorUserName }).exec()
         if (!donor) {
             throw new Error("Donor not found");
         }
-        if (!donor.userName) {
-
-            throw new Error("Donor validation failed: userName is required.")
-        }
-
         const donation = await Donation.create({ ...donationData, donorUserName: donor._id })
         donor.donations.push(donation)
         await donor.save()
@@ -31,12 +24,10 @@ const addDonationToEvent = async (donationData, eventName, donorUserName) => {
         if (!event) {
             throw new Error("Event not found");
         }
-        const donor = await Donor.findOne({ userName: donorUserName }).exec()
+        const donor = await Donor.findOne({ username: donorUserName }).exec()
         const donation = await Donation.create({ ...donationData, event: event._id, donorUserName: donor._id });
-
         event.donations.push(donation._id);
         await event.save();
-
         console.log("Donation successfully added to event:", donation);
     } catch (error) {
         console.error("Error adding donation to event:", error.message);
@@ -45,24 +36,24 @@ const addDonationToEvent = async (donationData, eventName, donorUserName) => {
 };
 const addDonation = async (req, res) => {
     try {
-        const { donationAmount, coinType, Day, notes, donorUserName, event } = req.body;
+        const { donationAmount, coinType,notes, donorUserName, event } = req.body;
         if (!donorUserName) {
             res.status(400).json({ message: "Donor ID is required" });
         }
         if (!donationAmount) {
             res.status(400).json({ message: "Donation amount is required" });
         }
-        const donationData = { donationAmount, coinType, Day, notes, event };
+        const donationData = { donationAmount, coinType, notes, event };
         await addDonationToDonor(donationData, donorUserName);
         await addDonationToEvent(donationData, event, donorUserName);
         res.send("succses")
     } catch (error) {
         console.error("Error in addDonation:", error.message);
-        res.status(500).json({ message: "Internal server error" });
+        return res.status(500).json({ message: "Internal server error" });
     }
 }
 
-const getAllDanotions = async (req, res) => {
+const getAllDonations  = async (req, res) => {
     try {
         const donations = await Donation.find().lean().sort({ donationDate: 1 })
         if (!donations)
@@ -129,6 +120,6 @@ const deleteDonation = async (req, res) => {
 
 
 
-module.exports = { addDonation, getAllDanotions, updateDonation, deleteDonation }
+module.exports = { addDonation, getAllDonations , updateDonation, deleteDonation }
 
 

@@ -8,7 +8,6 @@ const DonorSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
-    unique: true,
   },
   password: {
     type: String,
@@ -23,7 +22,8 @@ const DonorSchema = new mongoose.Schema({
     type: String,
     required: true,
     lowercase: true,
-    trim: true
+    trim: true,
+    unique: true
   },
   phone: {
     type: String,
