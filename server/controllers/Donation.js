@@ -1,0 +1,125 @@
+const Donation = require("../Models/Donation")
+const Event = require("../Models/Event")
+const Donor =require("../Models/Donor")// mongoose.models.Donor || mongoose.model('Donor', DonorSchema);
+const addDonationToDonor = async (donationData, donorUserName) => {
+      try {
+        const donor = await Donor.findOne({ username: donorUserName }).exec()
+        if (!donor) {
+            throw new Error("Donor not found");
+        }
+        const donation = await Donation.create({ ...donationData, donorUserName: donor._id })
+        donor.donations.push(donation)
+        await donor.save()
+    } catch (error) {
+        console.error("Error adding donation:", error.message);
+        throw error;
+    }
+}
+const addDonationToEvent = async (donationData, eventName, donorUserName) => {
+
+    try {
+
+        const event = await Event.findOne({ name: eventName }).exec();
+
+        if (!event) {
+            throw new Error("Event not found");
+        }
+        const donor = await Donor.findOne({ username: donorUserName }).exec()
+        const donation = await Donation.create({ ...donationData, event: event._id, donorUserName: donor._id });
+        event.donations.push(donation._id);
+        await event.save();
+        console.log("Donation successfully added to event:", donation);
+    } catch (error) {
+        console.error("Error adding donation to event:", error.message);
+        throw error;
+    }
+};
+const addDonation = async (req, res) => {
+    try {
+        const { donationAmount, coinType,notes, donorUserName, event } = req.body;
+        if (!donorUserName) {
+            res.status(400).json({ message: "Donor ID is required" });
+        }
+        if (!donationAmount) {
+            res.status(400).json({ message: "Donation amount is required" });
+        }
+        const donationData = { donationAmount, coinType, notes, event };
+        await addDonationToDonor(donationData, donorUserName);
+        await addDonationToEvent(donationData, event, donorUserName);
+        res.send("succses")
+    } catch (error) {
+        console.error("Error in addDonation:", error.message);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+const getAllDonations  = async (req, res) => {
+    try {
+        const donations = await Donation.find().lean().sort({ donationDate: 1 })
+        if (!donations)
+            res.json([])
+        res.json(donations)
+    }
+    catch (error) {
+        console.error("Error in getAllDanotions:", error.message)
+        res.status(500).json({ message: "Internal server error" })
+    }
+}
+
+const updateDonation = async (req, res) => {
+    try {
+        const { donationAmount, coinType, Day, notes, donationId, donorUserName, event } = req.body;
+
+        if (!donationId) {
+            return res.status(400).json({ message: "Donation ID is required" });
+        }
+
+        // חיפוש התרומה לפי donationId
+        const donation = await Donation.findById(donationId).exec();
+        if (!donation) {
+            return res.status(404).json({ message: "Donation not found" });
+        }
+        
+        const donor = await Donor.findOne({ _id: donation.donorUserName }).exec()
+
+        if(donorUserName){
+             donor = await Donor.findOne({ userName: donorUserName }).exec()
+        }
+
+        // עדכון פרטי התרומה
+        donation.donationAmount = donationAmount || donation.donationAmount;
+        donation.coinType = coinType || donation.coinType;
+        donation.Day = Day || donation.Day;
+        donation.notes = notes || donation.notes;
+        donation.donorUserName = donor._id ;
+        donation.event = event || donation.event;
+
+        // שמירת התרומה המעודכנת
+        await donation.save();
+
+        res.json({ message: "Donation updated successfully", donation });
+    } catch (error) {
+        console.error("Error in updateDonation:", error.message);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+const deleteDonation = async (req, res) => {
+    try {
+        const { _id } = req.body;
+        if (!_id) {
+            res.status(400).json({ message: "donations ID is required" });
+        }
+        const donations = await Donation.findById(_id).exec()
+        await donations.deleteOne()
+        res.send("succses")
+    } catch (error) {
+        console.error("Error in deleteDonation:", error.message);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+
+
+module.exports = { addDonation, getAllDonations , updateDonation, deleteDonation }
+
+
