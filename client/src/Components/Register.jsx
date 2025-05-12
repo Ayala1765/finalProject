@@ -8,7 +8,7 @@ import { Checkbox } from 'primereact/checkbox';
 import { Dialog } from 'primereact/dialog';
 import { Divider } from 'primereact/divider';
 import { classNames } from 'primereact/utils';
-// import { CountryService } from '../service/CountryService';
+import axios from 'axios';
 import './FormDemo.css';
 
 const Register = () => {
@@ -34,11 +34,13 @@ const Register = () => {
 
     const { control, formState: { errors }, handleSubmit, reset } = useForm({ defaultValues });
 
-    const onSubmit = (data) => {
+    const onSubmit = async(data) => {
         setFormData(data);
         setShowMessage(true);
+        setVisible(false);
+        reset()
+        await axios.post('http://localhost:1135/auth/register', data )
 
-        reset();
     };
 
     const getFormErrorMessage = (name) => {

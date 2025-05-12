@@ -1,13 +1,22 @@
-import Login from "./Components/Login"
-import Register from "./Components/Register"
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+import Login from "./Components/Login";
+import HomeDonor from "./Components/HomeDonor";
+import 'primeicons/primeicons.css';
 
+function App() {
+    return (
+        <>
 
-  function App() {
-    return (<>
-<Login/>
+            <Routes>
+                <Route path="/" element={<Login />} />
 
- {/* <Register/>  */}
-</>
-    )
+                
+                <Route path="/homeDonor" element={<HomeDonor />} />
+
+            </Routes>
+        </>
+    );
 }
-        export default App
+
+export default App;

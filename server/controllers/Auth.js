@@ -7,7 +7,9 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key'
 // פונקציה: הרשמה
 const register = async (req, res) => {
   try {
-    const { name, username, password,role, email, phone } = req.body;
+    const { name, username, password, email, phone } = req.body;
+    console.log(name, username, password, email, phone);
+    
   if (!username||!password||!email) {
       return res.status(400).json({ error: 'There are required fileds' });
     }
@@ -18,8 +20,7 @@ const register = async (req, res) => {
     const newDonor = new Donor({
       name,
       username,
-      password: hashedPassword,// שמירה של הסיסמה המוצפנת
-      role, 
+      password: hashedPassword,// שמירה של הסיסמה המוצפנת 
       email,
       phone,
     })

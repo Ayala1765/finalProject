@@ -3,12 +3,13 @@ import axios from 'axios'
 import { Divider } from 'primereact/divider'
 import { InputText } from 'primereact/inputtext'
 import { Button } from 'primereact/button'
+import { useNavigate } from 'react-router-dom'
 import Register from './Register'
 
 const Login = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-
+    const navigate = useNavigate()
     const handleLogin = async () => {
         try {
             if (!email || !password) {
@@ -16,10 +17,7 @@ const Login = () => {
                 return
             }
             await axios.post('http://localhost:1135/auth/login', { email, password })
-            // .then((response) => {
-            //     console.log('Login successful:', response.data)
-            alert('Login successful!')
-            // })
+        navigate('/homeDonor')
         } catch (error) {
             {
                 console.log('Error logging in:', error);
@@ -27,6 +25,11 @@ const Login = () => {
             }
         }
     }
+        const handleLogout = () => {
+            localStorage.removeItem('jwtToken');
+            sessionStorage.removeItem('userSession');
+            window.location.href = '/login';
+        }
 
     return (
         <div className="card">
@@ -67,16 +70,17 @@ const Login = () => {
                 </div>
                 <div className="w-full md:w-5 flex align-items-center justify-content-center py-5">
                     <Button
-                        label="Sign Up"
+                        label="Logout"
                         icon="pi pi-user-plus"
                         severity="success"
                         className="w-10rem"
+                        onClick={handleLogout}
                     />
                 </div>
             </div>
-          <Register></Register>
+            <Register></Register>
         </div>
     );
 };
 
-export default Login;
+export default Login

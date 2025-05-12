@@ -6,13 +6,16 @@ import 'primeflex/primeflex.css'
 import 'primereact/resources/primereact.css'
 import 'primereact/resources/themes/lara-light-indigo/theme.css'
 import { PrimeReactProvider } from 'primereact/api'
+import { BrowserRouter } from 'react-router-dom'
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
-  <React.StrictMode>   
-    <PrimeReactProvider>
-    <App /> 
-    </PrimeReactProvider>
-  </React.StrictMode>
+  <BrowserRouter>
+    <React.StrictMode>
+      <PrimeReactProvider>
+        <App />
+      </PrimeReactProvider>
+    </React.StrictMode>
+  </BrowserRouter>
 )
 
 // If you want to start measuring performance in your app, pass a function
