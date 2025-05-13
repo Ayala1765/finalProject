@@ -1,8 +1,14 @@
 import React from 'react';
 import { Menubar } from 'primereact/menubar';
+import { Button } from 'primereact/button';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { logOut } from '../redux/tokenSlice';
+
 const NavigateDonor = () => {
     const navigate = useNavigate()
+    const dispatch = useDispatch();
+
     const items = [
         {
             label: 'Home',
@@ -11,12 +17,34 @@ const NavigateDonor = () => {
                 navigate('/homeDonor');
             }
 
+        },
+        {
+            label: 'About us',
+            icon: 'pi pi-star',
+            command: () => {
+                navigate('/about');
+            }
+        },
+        {
+            label: 'For donation',
+            icon: 'pi pi-plus-circle',
+            command: () => {
+                navigate('/addDonation');
+            }
         }
 
     ];
+    const end = (
+        <div className="flex align-items-center gap-2">
+            <Button onClick={() => {
+                dispatch(logOut());
+                navigate('/')
+            }}  >   להתנתקות</Button>
+        </div>
+    );
     return (<>
         <div className="card">
-            <Menubar model={items} />
+            <Menubar model={items} end={end} />
         </div>
     </>)
 }

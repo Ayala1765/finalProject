@@ -1,14 +1,18 @@
 import React, { useState } from 'react'
 import axios from 'axios'
-import { Divider } from 'primereact/divider'
+// import { Divider } from 'primereact/divider'
 import { InputText } from 'primereact/inputtext'
 import { Button } from 'primereact/button'
 import { useNavigate } from 'react-router-dom'
 import Register from './Register'
+import { useDispatch,useSelector } from 'react-redux';
+import { setToken, setUser,setRole } from '../redux/tokenSlice';
 
 const Login = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const dispatch = useDispatch();
+
     const navigate = useNavigate()
     const handleLogin = async () => {
         try {
@@ -16,8 +20,11 @@ const Login = () => {
                 alert('Please fill in all fields.')
                 return
             }
-            await axios.post('http://localhost:1135/auth/login', { email, password })
-        navigate('/homeDonor')
+           const res= await axios.post('http://localhost:1135/auth/login', { email, password })
+            dispatch(setUser(res.data.user));
+            dispatch(setRole(res.data.role));
+            dispatch(setToken(res.data.token));
+            navigate('/homeDonor')
         } catch (error) {
             {
                 console.log('Error logging in:', error);
@@ -25,11 +32,6 @@ const Login = () => {
             }
         }
     }
-        const handleLogout = () => {
-            localStorage.removeItem('jwtToken');
-            sessionStorage.removeItem('userSession');
-            window.location.href = '/login';
-        }
 
     return (
         <div className="card">
@@ -60,23 +62,23 @@ const Login = () => {
                         onClick={handleLogin}
                     />
                 </div>
-                <div className="w-full md:w-2">
+                {/* <div className="w-full md:w-2">
                     <Divider layout="vertical" className="hidden md:flex">
                         <b>OR</b>
                     </Divider>
                     <Divider layout="horizontal" className="flex md:hidden" align="center">
                         <b>OR</b>
                     </Divider>
-                </div>
-                <div className="w-full md:w-5 flex align-items-center justify-content-center py-5">
-                    <Button
+                </div> */}
+                {/* <div className="w-full md:w-5 flex align-items-center justify-content-center py-5">
+                     <Button
                         label="Logout"
                         icon="pi pi-user-plus"
                         severity="success"
                         className="w-10rem"
                         onClick={handleLogout}
-                    />
-                </div>
+                    /> 
+                </div> */}
             </div>
             <Register></Register>
         </div>

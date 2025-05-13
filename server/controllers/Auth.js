@@ -49,13 +49,19 @@ const login = async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ error: 'Invalid email or password' });
     }
-
+    const newDonor = new Donor({
+      name:donor.name,
+      username:donor.username,
+      email:donor.email,
+      phone:donor.phone,
+      role: donor.role
+    })
     // יצירת טוקן (JWT)
     const token = jwt.sign({ id: donor._id, role: donor.role }, JWT_SECRET, {
       expiresIn: '1h',
     });
 
-    res.status(200).json({ message: 'Login successful', token });
+    res.status(200).send( {token,user:newDonor,role:donor.role });
   } catch (error) {
     res.status(500).json({ error: 'Error logging in' });
   }

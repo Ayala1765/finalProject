@@ -28,20 +28,8 @@ const DonorSchema = new mongoose.Schema({
   phone: {
     type: String,
     trim: true
-  },
-  donations:
-  // {
-  //   type:String
-  // }
-[
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Donation',
-      default: []
-    }
-  ]
+  }
 })
-const Donor = mongoose.models.Donor || mongoose.model('Donor', DonorSchema);
+module.exports = mongoose.model('Donor', DonorSchema);
 
 
-module.exports = Donor;

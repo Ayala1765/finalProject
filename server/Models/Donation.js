@@ -16,22 +16,22 @@ const DonationSchema = new mongoose.Schema({
   },
   Day: {
     type: Number,
-    enum: [15, 14],
-    required: true
+    enum: [15, 14]
   },
-  notes: {
-    type: String,
-    required: false,
-    trim: true,
-    default: ""
-  },
-  donorUserName: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Donor', 
-    required: true
-  },
-  event:{
-    type:String
-  }
+
+  donorId: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: 'Donor',
+  required: true
+},
+  event: {
+  type: String,
+  default: "general"
+}, notes: {
+  type: String,
+  required: false,
+  trim: true,
+  default: ""
+}
 })
-module.exports= mongoose.model('Donation', DonationSchema);
+module.exports = mongoose.model('Donation', DonationSchema);

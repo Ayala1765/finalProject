@@ -1,58 +1,58 @@
 const Donation = require("../Models/Donation")
 const Event = require("../Models/Event")
-const Donor =require("../Models/Donor")// mongoose.models.Donor || mongoose.model('Donor', DonorSchema);
-const addDonationToDonor = async (donationData, donorUserName) => {
-      try {
-        const donor = await Donor.findOne({ username: donorUserName }).exec()
-        if (!donor) {
-            throw new Error("Donor not found");
-        }
-        const donation = await Donation.create({ ...donationData, donorUserName: donor._id })
-        donor.donations.push(donation)
-        await donor.save()
-    } catch (error) {
-        console.error("Error adding donation:", error.message);
-        throw error;
-    }
-}
-const addDonationToEvent = async (donationData, eventName, donorUserName) => {
+ const Donor =require("../models/Donor")
 
-    try {
+// const addDonationToEvent = async (donationData, eventName, donorUserName) => {
 
-        const event = await Event.findOne({ name: eventName }).exec();
+//     try {
 
-        if (!event) {
-            throw new Error("Event not found");
-        }
-        const donor = await Donor.findOne({ username: donorUserName }).exec()
-        const donation = await Donation.create({ ...donationData, event: event._id, donorUserName: donor._id });
-        event.donations.push(donation._id);
-        await event.save();
-        console.log("Donation successfully added to event:", donation);
-    } catch (error) {
-        console.error("Error adding donation to event:", error.message);
-        throw error;
-    }
-};
+//         const event = await Event.findOne({ name: eventName }).exec();
+
+//         if (!event) {
+//             throw new Error("Event not found");
+//         }
+//         const donor = await Donor.findOne({ username: donorUserName }).exec()
+//         const donation = await Donation.create({ ...donationData, event: event._id, donorUserName: donor._id });
+//         event.donations.push(donation._id);
+//         await event.save();
+//         console.log("Donation successfully added to event:", donation);
+//     } catch (error) {
+//         console.error("Error adding donation to event:", error.message);
+//         throw error;
+//     }
+// };
 const addDonation = async (req, res) => {
     try {
-        const { donationAmount, coinType,notes, donorUserName, event } = req.body;
-        if (!donorUserName) {
-            res.status(400).json({ message: "Donor ID is required" });
+        const { donationAmount, coinType, notes, donorId, event } = req.body;
+        console.log("😎🎶😎😎🎶😎🤞🤷‍♀️😢😉💖😢🤞🎂😉👍🎉🤞😎😉🤞❤"+donationAmount, coinType, notes, donorId, event);
+        console.log(req.body);
+        // בדיקות תקינות
+        if (!donorId) {
+            return res.status(400).json({ message: "Donor ID is required" });
         }
-        if (!donationAmount) {
-            res.status(400).json({ message: "Donation amount is required" });
+        if (!donationAmount || donationAmount <= 0) {
+            return res.status(400).json({ message: "Donation amount must be greater than 0." });
         }
-        const donationData = { donationAmount, coinType, notes, event };
-        await addDonationToDonor(donationData, donorUserName);
-        await addDonationToEvent(donationData, event, donorUserName);
-        res.send("succses")
+        if (!['$', '₪'].includes(coinType)) {
+            return res.status(400).json({ message: "Invalid coin type. Must be '$' or '₪'." });
+        }
+
+
+        // יצירת התרומה
+        const donation = await Donation.create({
+            donationAmount,
+            coinType,
+            notes,
+            donorId,
+            event,
+        });
+
+        res.status(201).json(donation);
     } catch (error) {
         console.error("Error in addDonation:", error.message);
-        return res.status(500).json({ message: "Internal server error" });
+        res.status(500).json({ message: "Internal server error" });
     }
-}
-
+};
 const getAllDonations  = async (req, res) => {
     try {
         const donations = await Donation.find().lean().sort({ donationDate: 1 })
@@ -68,7 +68,7 @@ const getAllDonations  = async (req, res) => {
 
 const updateDonation = async (req, res) => {
     try {
-        const { donationAmount, coinType, Day, notes, donationId, donorUserName, event } = req.body;
+        const { donationAmount, coinType, Day, notes, donationId, donorId, event } = req.body;
 
         if (!donationId) {
             return res.status(400).json({ message: "Donation ID is required" });
@@ -80,10 +80,10 @@ const updateDonation = async (req, res) => {
             return res.status(404).json({ message: "Donation not found" });
         }
         
-        const donor = await Donor.findOne({ _id: donation.donorUserName }).exec()
+        const donor = await Donor.findOne({ _id: donation.donorId }).exec()
 
-        if(donorUserName){
-             donor = await Donor.findOne({ userName: donorUserName }).exec()
+        if(donorId){
+             donor = await Donor.findOne({ userName: donorId }).exec()
         }
 
         // עדכון פרטי התרומה
@@ -91,7 +91,7 @@ const updateDonation = async (req, res) => {
         donation.coinType = coinType || donation.coinType;
         donation.Day = Day || donation.Day;
         donation.notes = notes || donation.notes;
-        donation.donorUserName = donor._id ;
+        donation.donorId = donor._id ;
         donation.event = event || donation.event;
 
         // שמירת התרומה המעודכנת
