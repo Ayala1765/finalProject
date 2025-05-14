@@ -31,7 +31,15 @@ const NavigateDonor = () => {
             command: () => {
                 navigate('/addDonation');
             }
+        },
+        {
+            label: 'Recent donations',
+            icon: 'pi pi-history',
+            command: () => {
+                navigate('/RecentDonations');
+            }
         }
+
 
     ];
     const end = (

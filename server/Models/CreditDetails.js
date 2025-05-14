@@ -16,10 +16,6 @@ const creditSchema = new mongoose.Schema({
   cvv: { // קוד CVV (יש להצפין!)
     type: String,
     required: true
-  },
-  iv: {
-    type: String,
-    required: true
   }
 })
 

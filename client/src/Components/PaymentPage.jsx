@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
-import { Dropdown } from "primereact/dropdown";
 import { Card } from "primereact/card";
-import { InputNumber } from "primereact/inputnumber";
+import axios from "axios";
 import "primereact/resources/themes/saga-blue/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
@@ -11,40 +10,92 @@ import "primeflex/primeflex.css";
 
 const PaymentPage = () => {
     const [cardNumber, setCardNumber] = useState("");
-    const [cardHolder, setCardHolder] = useState("");
-    const [expiryDate, setExpiryDate] = useState("");
+    const [cardHolderName, setCardHolderName] = useState("");
+    const [expirationDate, setExpirationDate] = useState("");
     const [cvv, setCvv] = useState("");
-    const [amount, setAmount] = useState(null);
-    const [currency, setCurrency] = useState("₪");
 
-    const currencies = [
-        { label: "₪ - Shekel", value: "₪" },
-        { label: "$ - Dollar", value: "$" },
-        { label: "€ - Euro", value: "€" },
-    ];
-
-    const handlePayment = () => {
-        // בדיקות תקינות ושליחת הנתונים לשרת
-        if (!cardNumber || !cardHolder || !expiryDate || !cvv || !amount) {
+    const handlePayment = async () => {
+        // ולידציות
+        if (!cardNumber || !cardHolderName || !expirationDate || !cvv) {
             alert("Please fill in all fields");
-            return;
+            return; // עוצר את המשך הקוד
         }
-
-        console.log("Processing payment...", {
-            cardNumber,
-            cardHolder,
-            expiryDate,
-            cvv,
-            amount,
-            currency,
-        });
-
-        alert("Payment Successful!");
+    
+        if (!/^[a-zA-Z\s]+$/.test(cardHolderName)) {
+            alert("Card holder name must contain only letters and spaces");
+            return; // עוצר את המשך הקוד
+        }
+    
+        const isValidCardNumber = (number) => {
+            const regex = /^\d{13,19}$/; // בין 13 ל-19 ספרות
+            if (!regex.test(number)) {
+                return false;
+            }
+            let sum = 0;
+            let shouldDouble = false;
+            for (let i = number.length - 1; i >= 0; i--) {
+                let digit = parseInt(number[i]);
+                if (shouldDouble) {
+                    digit *= 2;
+                    if (digit > 9) digit -= 9;
+                }
+                sum += digit;
+                shouldDouble = !shouldDouble;
+            }
+            return sum % 10 === 0;
+        };
+    
+        if (!isValidCardNumber(cardNumber)) {
+            alert("Invalid card number");
+            return; // עוצר את המשך הקוד
+        }
+    
+        if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expirationDate)) {
+            alert("Expiration date must be in MM/YY format");
+            return; // עוצר את המשך הקוד
+        }
+    
+        const isExpired = (date) => {
+            const [month, year] = date.split("/").map(Number);
+            const now = new Date();
+            const currentYear = now.getFullYear() % 100;
+            const currentMonth = now.getMonth() + 1;
+            return year < currentYear || (year === currentYear && month < currentMonth);
+        };
+    
+        if (isExpired(expirationDate)) {
+            alert("Card is expired");
+            return; // עוצר את המשך הקוד
+        }
+    
+        if (!/^\d{3,4}$/.test(cvv)) {
+            alert("CVV must be 3 or 4 digits");
+            return; // עוצר את המשך הקוד
+        }
+    
+        // שליחת נתונים לשרת
+        try {
+            const paymentData = { cardHolderName, cardNumber, expirationDate, cvv };
+            await axios.post("http://localhost:1135/creditDetails", paymentData);
+            alert("Payment Successful!");
+        } catch (error) {
+            alert("Payment failed. Please try again.");
+            console.error("Error processing payment:", error.response?.data || error.message);
+        }
     };
 
     return (
         <div className="p-d-flex p-jc-center p-ai-center p-mt-5">
             <Card title="Payment Page" className="p-shadow-5" style={{ width: "400px" }}>
+                <div className="p-field">
+                    <label htmlFor="cardHolderName">Card Holder</label>
+                    <InputText
+                        id="cardHolderName"
+                        value={cardHolderName}
+                        onChange={(e) => setCardHolderName(e.target.value)}
+                    />
+                </div>
+
                 <div className="p-fluid">
                     <div className="p-field">
                         <label htmlFor="cardNumber">Card Number</label>
@@ -52,27 +103,15 @@ const PaymentPage = () => {
                             id="cardNumber"
                             value={cardNumber}
                             onChange={(e) => setCardNumber(e.target.value)}
-                            placeholder="1234 5678 9012 3456"
                         />
                     </div>
 
                     <div className="p-field">
-                        <label htmlFor="cardHolder">Card Holder</label>
+                        <label htmlFor="expirationDate">Expiry Date</label>
                         <InputText
-                            id="cardHolder"
-                            value={cardHolder}
-                            onChange={(e) => setCardHolder(e.target.value)}
-                            placeholder="John Doe"
-                        />
-                    </div>
-
-                    <div className="p-field">
-                        <label htmlFor="expiryDate">Expiry Date</label>
-                        <InputText
-                            id="expiryDate"
-                            value={expiryDate}
-                            onChange={(e) => setExpiryDate(e.target.value)}
-                            placeholder="MM/YY"
+                            id="expirationDate"
+                            value={expirationDate}
+                            onChange={(e) => setExpirationDate(e.target.value)}
                         />
                     </div>
 
@@ -82,31 +121,7 @@ const PaymentPage = () => {
                             id="cvv"
                             value={cvv}
                             onChange={(e) => setCvv(e.target.value)}
-                            placeholder="123"
-                            maxLength={3}
-                        />
-                    </div>
-
-                    <div className="p-field">
-                        <label htmlFor="amount">Amount</label>
-                        <InputNumber
-                            id="amount"
-                            value={amount}
-                            onValueChange={(e) => setAmount(e.value)}
-                            mode="currency"
-                            currency="ILS"
-                            locale="he-IL"
-                        />
-                    </div>
-
-                    <div className="p-field">
-                        <label htmlFor="currency">Currency</label>
-                        <Dropdown
-                            id="currency"
-                            value={currency}
-                            options={currencies}
-                            onChange={(e) => setCurrency(e.value)}
-                            placeholder="Select a currency"
+                            maxLength={4}
                         />
                     </div>
 

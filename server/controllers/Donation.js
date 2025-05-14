@@ -2,25 +2,7 @@ const Donation = require("../Models/Donation")
 const Event = require("../Models/Event")
  const Donor =require("../models/Donor")
 
-// const addDonationToEvent = async (donationData, eventName, donorUserName) => {
 
-//     try {
-
-//         const event = await Event.findOne({ name: eventName }).exec();
-
-//         if (!event) {
-//             throw new Error("Event not found");
-//         }
-//         const donor = await Donor.findOne({ username: donorUserName }).exec()
-//         const donation = await Donation.create({ ...donationData, event: event._id, donorUserName: donor._id });
-//         event.donations.push(donation._id);
-//         await event.save();
-//         console.log("Donation successfully added to event:", donation);
-//     } catch (error) {
-//         console.error("Error adding donation to event:", error.message);
-//         throw error;
-//     }
-// };
 const addDonation = async (req, res) => {
     try {
         const { donationAmount, coinType, notes, donorId, event } = req.body;
@@ -36,8 +18,6 @@ const addDonation = async (req, res) => {
         if (!['$', '₪'].includes(coinType)) {
             return res.status(400).json({ message: "Invalid coin type. Must be '$' or '₪'." });
         }
-
-
         // יצירת התרומה
         const donation = await Donation.create({
             donationAmount,
@@ -46,7 +26,7 @@ const addDonation = async (req, res) => {
             donorId,
             event,
         });
-
+        //alert('succses')
         res.status(201).json(donation);
     } catch (error) {
         console.error("Error in addDonation:", error.message);
@@ -56,6 +36,18 @@ const addDonation = async (req, res) => {
 const getAllDonations  = async (req, res) => {
     try {
         const donations = await Donation.find().lean().sort({ donationDate: 1 })
+        if (!donations)
+            res.json([])
+        res.json(donations)
+    }
+    catch (error) {
+        console.error("Error in getAllDanotions:", error.message)
+        res.status(500).json({ message: "Internal server error" })
+    }
+}
+const getByDonorId  = async (req, res) => {
+    try {
+        const donations = await Donation.findById().sort({ donationDate: 1 })
         if (!donations)
             res.json([])
         res.json(donations)
@@ -120,6 +112,6 @@ const deleteDonation = async (req, res) => {
 
 
 
-module.exports = { addDonation, getAllDonations , updateDonation, deleteDonation }
+module.exports = { addDonation, getAllDonations,getByDonorId , updateDonation, deleteDonation }
 
 
