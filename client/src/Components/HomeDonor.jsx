@@ -6,7 +6,9 @@ const HomeDonor = () => {
 
   return (<>
     <div className="home-donor-container">
-      <h1 className="home-donor-title">Welcome to {user?.name} Y&Y</h1>
+
+      <h1 className="home-donor-title"> Hi {user?.name}</h1>
+      <h1 className="home-donor-title"> Welcome to Keren Y&Y</h1>
       <p className="home-donor-text">Thank you for supporting us!</p>
     </div></>
   );

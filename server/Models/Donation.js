@@ -27,7 +27,8 @@ const DonationSchema = new mongoose.Schema({
   event: {
   type: String,
   default: "general"
-}, notes: {
+},
+ notes: {
   type: String,
   required: false,
   trim: true,

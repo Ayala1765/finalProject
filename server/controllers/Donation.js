@@ -1,12 +1,11 @@
 const Donation = require("../Models/Donation")
 const Event = require("../Models/Event")
- const Donor =require("../models/Donor")
+const Donor = require("../models/Donor")
 
 
 const addDonation = async (req, res) => {
     try {
         const { donationAmount, coinType, notes, donorId, event } = req.body;
-        console.log("😎🎶😎😎🎶😎🤞🤷‍♀️😢😉💖😢🤞🎂😉👍🎉🤞😎😉🤞❤"+donationAmount, coinType, notes, donorId, event);
         console.log(req.body);
         // בדיקות תקינות
         if (!donorId) {
@@ -33,7 +32,7 @@ const addDonation = async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 };
-const getAllDonations  = async (req, res) => {
+const getAllDonations = async (req, res) => {
     try {
         const donations = await Donation.find().lean().sort({ donationDate: 1 })
         if (!donations)
@@ -45,18 +44,28 @@ const getAllDonations  = async (req, res) => {
         res.status(500).json({ message: "Internal server error" })
     }
 }
-const getByDonorId  = async (req, res) => {
+const getByDonorId = async (req, res) => {
+    const { donorId } = req.params
+    if (!donorId) {
+        return res.status(400).json({ message: "Donor ID is required" });
+    }
     try {
-        const donations = await Donation.findById().sort({ donationDate: 1 })
-        if (!donations)
+        const donations = await Donation.find({donorId}).sort({ donationDate: 1 }).lean()
+        if (!donations.length)
             res.json([])
         res.json(donations)
     }
     catch (error) {
-        console.error("Error in getAllDanotions:", error.message)
+        console.error("Error in getByDonorId:", error.message)
         res.status(500).json({ message: "Internal server error" })
     }
 }
+
+
+
+
+
+
 
 const updateDonation = async (req, res) => {
     try {
@@ -71,11 +80,11 @@ const updateDonation = async (req, res) => {
         if (!donation) {
             return res.status(404).json({ message: "Donation not found" });
         }
-        
+
         const donor = await Donor.findOne({ _id: donation.donorId }).exec()
 
-        if(donorId){
-             donor = await Donor.findOne({ userName: donorId }).exec()
+        if (donorId) {
+            donor = await Donor.findOne({ userName: donorId }).exec()
         }
 
         // עדכון פרטי התרומה
@@ -83,7 +92,7 @@ const updateDonation = async (req, res) => {
         donation.coinType = coinType || donation.coinType;
         donation.Day = Day || donation.Day;
         donation.notes = notes || donation.notes;
-        donation.donorId = donor._id ;
+        donation.donorId = donor._id;
         donation.event = event || donation.event;
 
         // שמירת התרומה המעודכנת
@@ -112,6 +121,6 @@ const deleteDonation = async (req, res) => {
 
 
 
-module.exports = { addDonation, getAllDonations,getByDonorId , updateDonation, deleteDonation }
+module.exports = { addDonation, getAllDonations, getByDonorId, updateDonation, deleteDonation }
 
 
