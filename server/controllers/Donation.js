@@ -45,12 +45,16 @@ const getAllDonations = async (req, res) => {
     }
 }
 const getByDonorId = async (req, res) => {
+    console.log("fkkkkkkkkkkkkkkkkkkk");
+    
     const { donorId } = req.params
     if (!donorId) {
         return res.status(400).json({ message: "Donor ID is required" });
     }
     try {
         const donations = await Donation.find({donorId}).sort({ donationDate: 1 }).lean()
+        console.log(donations);
+        
         if (!donations.length)
             res.json([])
         res.json(donations)

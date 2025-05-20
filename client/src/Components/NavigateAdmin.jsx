@@ -5,55 +5,50 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logOut } from '../redux/tokenSlice';
 
-const NavigateDonor = () => {
+const NavigateAdmin = () => {
     const navigate = useNavigate()
-    const dispatch = useDispatch();
-
+    const dispatch = useDispatch()
     const items = [
         {
             label: 'Home',
             icon: 'pi pi-home',
             command: () => {
-                navigate('/homeDonor');
+                navigate('/homedonor')
             }
 
         },
+
         {
-            label: 'About us',
-            icon: 'pi pi-star',
+            label: 'Donors',
+            icon: 'pi pi-users',
             command: () => {
-                navigate('/about');
-            }
-        },
-        {
-            label: 'For donation',
-            icon: 'pi pi-plus-circle',
-            command: () => {
-                navigate('/addDonation');
-            }
-        },
-        {
-            label: 'Recent donations',
-            icon: 'pi pi-history',
-            command: () => {
-                navigate('/RecentDonations');
+                navigate('/getAllDonors')
             }
         }
+        // ,
+        // {
+        //     label: 'Recent donations',
+        //     icon: 'pi pi-history',
+        //     command: () => {
+        //         navigate('/RecentDonations')
+        //     }
+        // }
 
 
-    ];
+    ]
     const end = (
         <div className="flex align-items-center gap-2">
             <Button onClick={() => {
                 dispatch(logOut());
                 navigate('/')
-            }}  >   Logout</Button>
+            }}>Logout</Button>
         </div>
-    );
+    )
     return (<>
         <div className="card">
             <Menubar model={items} end={end} />
         </div>
+        
     </>)
 }
-export default NavigateDonor
+export default NavigateAdmin

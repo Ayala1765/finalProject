@@ -7,14 +7,18 @@ import About from "./Components/About";
 import AddDonation from "./Components/AddDonation";
 import { useDispatch, useSelector } from 'react-redux';
 import NavigateDonor from "./Components/NavigateDonor";
+import NavigateAdmin from "./Components/NavigateAdmin";
 import PaymentPage from "./Components/PaymentPage";
+import GetAllDonors from "./Components/GetAllDonors";
 import RecentDonations from "./Components/RecentDonations";
+
+
 function App() {
     const { token, role, user } = useSelector((state) => state.token);
 
     return (
         <>
-            {role == "manager" ? <NavigateDonor /> : role == "user" ? <NavigateDonor /> : <></>}
+            {role == "manager" ? <NavigateAdmin /> : role == "user" ? <NavigateDonor /> : <></>}
 
             <Routes>
                 <Route path="/" element={token ? <Navigate to="/homeDonor" replace /> : <Navigate to="/Login" replace />} />
@@ -24,6 +28,8 @@ function App() {
                 <Route path="/addDonation" element={<AddDonation />} />
                 <Route path="/paymentPage" element={<PaymentPage />} />
                 <Route path="/recentDonations" element={<RecentDonations />} />
+                <Route path="/getAllDonors" element={<GetAllDonors />} />
+
             </Routes>
         </>
     );

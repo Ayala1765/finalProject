@@ -1,5 +1,5 @@
 //useEffect
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
@@ -9,15 +9,17 @@ import { Dialog } from 'primereact/dialog';
 import { Divider } from 'primereact/divider';
 import { classNames } from 'primereact/utils';
 import axios from 'axios';
+import { Toast } from 'primereact/toast';
+
 import './FormDemo.css';
 
 const Register = () => {
-    // const [countries, setCountries] = useState([]);
-    const [showMessage, setShowMessage] = useState(false);
     const [visible, setVisible] = useState(false);
 
+    const toast = useRef(null); // Use useRef to create a ref
+
+    const [message, setMessage] = useState()
     const [formData, setFormData] = useState({});
-    // const countryservice = new CountryService();
     const defaultValues = {
         name: '',
         email: '',
@@ -27,27 +29,34 @@ const Register = () => {
         accept: false
     }
 
-    // useEffect(() => {
-    //     countryservice.getCountries().then(data => setCountries(data));
-    //     console.log(countries);
-    // }, [])
 
     const { control, formState: { errors }, handleSubmit, reset } = useForm({ defaultValues });
 
-    const onSubmit = async(data) => {
+    const onSubmit = async (data) => {
         setFormData(data);
-        setShowMessage(true);
-        setVisible(false);
-        reset()
-        await axios.post('http://localhost:1135/auth/register', data )
+        try {
+            const res = await axios.post('http://localhost:1135/auth/register', data)
+            console.log(res.data.message);
+            setVisible(false);
+            reset()
 
+            showGood(res.data.message)
+        }
+        catch (e) {
+            console.log(e.response.data.error );
+            showError(e.response.data.error)
+
+
+        }
     };
 
-    const getFormErrorMessage = (name) => {
-        return errors[name] && <small className="p-error">{errors[name].message}</small>
-    };
+    const showError = (message) => {
+        toast.current.show({ severity: 'error', summary: 'Error', detail: message, life: 3000 });
 
-    const dialogFooter = <div className="flex justify-content-center"><Button label="OK" className="p-button-text" autoFocus onClick={() => setShowMessage(false)} /></div>;
+    };
+    const showGood = (message) => {
+        toast.current.show({ severity: 'success', summary: 'Success', detail: message, life: 3000 });
+    };
     const passwordHeader = <h6>Pick a password</h6>;
     const passwordFooter = (
         <React.Fragment>
@@ -64,15 +73,8 @@ const Register = () => {
 
     return (
         <div className="form-demo">
-            <Dialog visible={showMessage} onHide={() => setShowMessage(false)} position="top" footer={dialogFooter} showHeader={false} breakpoints={{ '960px': '80vw' }} style={{ width: '30vw' }}>
-                <div className="flex justify-content-center flex-column pt-6 px-3">
-                    <i className="pi pi-check-circle" style={{ fontSize: '5rem', color: 'var(--green-500)' }}></i>
-                    <h5>Registration Successful!</h5>
-                    <p style={{ lineHeight: 1.5, textIndent: '1rem' }}>
-                        Your account is registered under name <b>{formData.name}</b> ; it'll be valid next 30 days without activation. Please check <b>{formData.email}</b> for activation instructions.
-                    </p>
-                </div>
-            </Dialog>
+            <Toast ref={toast} />
+
             <a style={{
                 color: 'blue',
                 textDecoration: 'underline',
@@ -93,7 +95,6 @@ const Register = () => {
                                     )} />
                                     <label htmlFor="name" className={classNames({ 'p-error': errors.name })}>Name*</label>
                                 </span>
-                                {getFormErrorMessage('name')}
                             </div>
                             <div className="field">
                                 <span className="p-float-label">
@@ -102,7 +103,6 @@ const Register = () => {
                                     )} />
                                     <label htmlFor="username" className={classNames({ 'p-error': errors.name })}>UserName*</label>
                                 </span>
-                                {getFormErrorMessage('username')}
                             </div>
                             <div className="field">
                                 <span className="p-float-label p-input-icon-right">
@@ -114,7 +114,6 @@ const Register = () => {
                                         )} />
                                     <label htmlFor="email" className={classNames({ 'p-error': !!errors.email })}>Email*</label>
                                 </span>
-                                {getFormErrorMessage('email')}
                             </div>
                             <div className="field">
                                 <span className="p-float-label">
@@ -123,7 +122,6 @@ const Register = () => {
                                     )} />
                                     <label htmlFor="password" className={classNames({ 'p-error': errors.password })}>Password*</label>
                                 </span>
-                                {getFormErrorMessage('password')}
                             </div>
                             <div className="unfield">
                                 <span className="p-float-label">
@@ -149,7 +147,6 @@ const Register = () => {
                                         Phone Number*
                                     </label>
                                 </span>
-                                {getFormErrorMessage('phone')}
                             </div>
                             <br />
                             <div className="field-checkbox">

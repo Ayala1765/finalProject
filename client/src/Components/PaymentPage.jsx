@@ -3,16 +3,20 @@ import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Card } from "primereact/card";
 import axios from "axios";
+import { useNavigate } from 'react-router-dom'
 import "primereact/resources/themes/saga-blue/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import "primeflex/primeflex.css";
+
+
 
 const PaymentPage = () => {
     const [cardNumber, setCardNumber] = useState("");
     const [cardHolderName, setCardHolderName] = useState("");
     const [expirationDate, setExpirationDate] = useState("");
     const [cvv, setCvv] = useState("");
+    const navigate = useNavigate()
 
     const handlePayment = async () => {
         // ולידציות
@@ -78,6 +82,8 @@ const PaymentPage = () => {
             const paymentData = { cardHolderName, cardNumber, expirationDate, cvv };
             await axios.post("http://localhost:1135/creditDetails", paymentData);
             alert("Payment Successful!");
+            navigate('/recentDonations')
+
         } catch (error) {
             alert("Payment failed. Please try again.");
             console.error("Error processing payment:", error.response?.data || error.message);

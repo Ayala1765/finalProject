@@ -1,3 +1,4 @@
+require('dotenv').config();
 const Donor =require("../models/Donor")
 const addDonor =
     async (req, res) => {
@@ -17,13 +18,17 @@ const addDonor =
     }
 const getAllDonors =
     async (req, res) => {
+
          try {
-            if (!req.user || req.user.role !== 'manager') {
-                return res.status(403).json({ error: 'Access denied' })
-            }
-            const donors = await Donor.find().lean().populate("donations", { _id: 0, donor: 0, __v: 0 }).sort({ name: 1 })
-            if (!donors || donors.length === 0)
+           
+            // if (!req.user || req.user.role !== 'manager') {  
+            //     return res.status(403).json({ error: 'Access denied' })
+            // }
+            const donors = await Donor.find().lean().sort({ name: 1 })
+            if (!donors || donors.length === 0){
                 res.json([])
+            }
+
             res.json(donors)
         }
         catch (error) {
