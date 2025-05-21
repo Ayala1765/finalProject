@@ -34,27 +34,27 @@ const addDonation = async (req, res) => {
 };
 const getAllDonations = async (req, res) => {
     try {
-        const donations = await Donation.find().lean().sort({ donationDate: 1 })
-        if (!donations)
-            res.json([])
+        const donations = await Donation.find().populate('donorId', 'name email').lean().sort({ donationDate: 1 });
+
+        if (!donations || donations.length === 0) {
+            return res.json([])
+        }
+
         res.json(donations)
+    } catch (error) {
+        console.error("Error in getAllDonations:", error.message);
+        res.status(500).json({ message: "Internal server error" });
     }
-    catch (error) {
-        console.error("Error in getAllDanotions:", error.message)
-        res.status(500).json({ message: "Internal server error" })
-    }
-}
+};
 const getByDonorId = async (req, res) => {
     console.log("fkkkkkkkkkkkkkkkkkkk");
-    
     const { donorId } = req.params
     if (!donorId) {
         return res.status(400).json({ message: "Donor ID is required" });
     }
     try {
-        const donations = await Donation.find({donorId}).sort({ donationDate: 1 }).lean()
+        const donations = await Donation.find({ donorId }).sort({ donationDate: 1 }).lean()
         console.log(donations);
-        
         if (!donations.length)
             res.json([])
         res.json(donations)

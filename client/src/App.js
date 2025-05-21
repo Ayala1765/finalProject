@@ -11,6 +11,8 @@ import NavigateAdmin from "./Components/NavigateAdmin";
 import PaymentPage from "./Components/PaymentPage";
 import GetAllDonors from "./Components/GetAllDonors";
 import RecentDonations from "./Components/RecentDonations";
+import GetAllDonations from "./Components/GetAllDonations";
+import AddDonor from "./Components/AddDonor";
 
 
 function App() {
@@ -19,7 +21,6 @@ function App() {
     return (
         <>
             {role == "manager" ? <NavigateAdmin /> : role == "user" ? <NavigateDonor /> : <></>}
-
             <Routes>
                 <Route path="/" element={token ? <Navigate to="/homeDonor" replace /> : <Navigate to="/Login" replace />} />
                 <Route path="/Login" element={<Login />} />
@@ -29,6 +30,9 @@ function App() {
                 <Route path="/paymentPage" element={<PaymentPage />} />
                 <Route path="/recentDonations" element={<RecentDonations />} />
                 <Route path="/getAllDonors" element={<GetAllDonors />} />
+                <Route path="/getAllDonations" element={<GetAllDonations />} />
+                <Route path="/addDonor" element={<AddDonor />} />
+
 
             </Routes>
         </>

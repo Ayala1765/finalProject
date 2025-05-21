@@ -25,15 +25,25 @@ const NavigateAdmin = () => {
                 navigate('/getAllDonors')
             }
         }
-        // ,
-        // {
-        //     label: 'Recent donations',
-        //     icon: 'pi pi-history',
-        //     command: () => {
-        //         navigate('/RecentDonations')
-        //     }
-        // }
+        ,
 
+        {
+            label: 'Donation',
+            icon: 'pi pi-wallet',
+            command: () => {
+                navigate('/getAllDonations')
+            }
+        }
+        ,
+
+        {
+            label: 'Add donor',
+            icon: 'pi pi-user-plus',
+            command: () => {
+                navigate('/AddDonor')
+            }
+        }
+       
 
     ]
     const end = (

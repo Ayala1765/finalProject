@@ -4,7 +4,7 @@ import { InputText } from 'primereact/inputtext'
 import { Button } from 'primereact/button'
 import { useNavigate } from 'react-router-dom'
 import Register from './Register'
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setToken, setUser, setRole } from '../redux/tokenSlice';
 
 const Login = () => {
@@ -26,10 +26,14 @@ const Login = () => {
             dispatch(setToken(res.data.token))
             navigate('/homeDonor')
         } catch (error) {
-            {
-                console.log('Error logging in:', error);
-                alert('Login failed. Please check your credentials.')
-            }
+            console.log('Error logging in:', error);
+            alert('Login failed. Please check your credentials.')
+        }
+    }
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            handleLogin();
         }
     }
 
@@ -53,6 +57,7 @@ const Login = () => {
                             onChange={(e) => setPassword(e.target.value)}
                             type="password"
                             className="w-12rem"
+                            onKeyDown={handleKeyDown} // Add this line
                         />
                     </div>
                     <Button

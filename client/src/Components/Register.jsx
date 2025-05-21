@@ -16,17 +16,11 @@ import './FormDemo.css';
 const Register = () => {
     const [visible, setVisible] = useState(false);
 
-    const toast = useRef(null); // Use useRef to create a ref
+    const toast = useRef(null)
 
-    const [message, setMessage] = useState()
     const [formData, setFormData] = useState({});
     const defaultValues = {
-        name: '',
-        email: '',
-        password: '',
-        date: null,
-        country: null,
-        accept: false
+
     }
 
 
@@ -43,7 +37,7 @@ const Register = () => {
             showGood(res.data.message)
         }
         catch (e) {
-            console.log(e.response.data.error );
+            console.log(e.response.data.error);
             showError(e.response.data.error)
 
 
