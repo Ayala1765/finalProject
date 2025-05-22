@@ -28,15 +28,25 @@ const GetAllDonors = () => {
                 });
 
                 // Initialize donors with empty children
-                const treeData = response.data.map((donor, index) => ({
-                    key: index.toString(),
+                const treeData = response.data.map((donor) => ({
+                    key: donor._id, // Use donor ID as the key for uniqueness
                     data: {
                         id: donor._id,
                         name: donor.name,
                         email: donor.email,
                         phone: donor.phone
                     },
-                    children: [] // Ensure children is defined
+                    children: donor.children?.map((donation) => ({
+                        key: donation._id, // Use donation ID as the key for uniqueness
+                        data: {
+                            id: donation._id,
+                            name: `Donation`,
+                            email: `donationAmount: ${donation.donationAmount}`,
+                            phone: `donationDate: ${new Date(donation.donationDate).toLocaleDateString('en-GB')}`,
+                            coinType: `coinType: ${donation.coinType}`
+                        },
+                        children: [] // Ensure children is defined
+                    })) || [] // Fallback to an empty array if no children
                 }));
 
                 console.log("Donors data:", treeData); // Debugging
@@ -67,7 +77,8 @@ const GetAllDonors = () => {
                     email: `donationAmount: ${donation.donationAmount}`,
                     phone: `donationDate: ${donation.donationDate}`,
                     coinType: `coinType: ${donation.coinType}`
-                }
+                },
+                children: []
             }));
 
             // Update the donor's children with the donations
