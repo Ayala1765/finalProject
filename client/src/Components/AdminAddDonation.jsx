@@ -20,8 +20,7 @@ const AdminAddDonation = () => {
     const [isPurim, setIsPurim] = useState(false);
     const toast = useRef(null);
     const { token } = useSelector((state) => state.token);
-    const [value, setValue] = useState(null);
-
+    const [allDonors, setAllDonors] = useState([]);
     const [donors, setDonors] = useState([]);
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
@@ -62,15 +61,14 @@ const AdminAddDonation = () => {
                 label: donor.name, // Display name
                 value: donor._id,  // Donor ID
             }));
-            setDonors(formattedDonors);
+            setAllDonors(formattedDonors); // Store the full list
+            setDonors(formattedDonors);    // Set the initial list
         } catch (err) {
             console.error("Error fetching donors:", err);
         }
     };
 
     const handleChange = (e, fieldName) => {
-        console.log(e.target.value," ",fieldName);
-        
         const value = e.target ? e.target.value : e.value;
         setFormData({ ...formData, [fieldName]: value });
 
@@ -126,22 +124,33 @@ const AdminAddDonation = () => {
                 <div className="field">
                     <label htmlFor="donorId">Select Donor</label>
                     <AutoComplete
-    value={donors.find(donor => donor.value === formData.donorId) || null} // Match the selected donor by ID
-    suggestions={donors}
-    completeMethod={(e) => {
-        const query = e.query.toLowerCase();
-        const filteredDonors = donors.filter(donor =>
-            donor.label.toLowerCase().includes(query)
-        );
-        setDonors(filteredDonors);
-    }}
-    field="label" // Display the donor's name
-    onChange={(e) => {
-        setFormData({ ...formData, donorId: e.value?.value || '' }); // Update donorId in formData
-    }}
-    dropdown
-    placeholder="Select a donor"
-/>
+                        value={donors.find(donor => donor.value === formData.donorId)?.label || formData.donorId || ''} // Display the donor's name or typed value
+                        suggestions={donors}
+                        completeMethod={(e) => {
+                            const query = e.query.toLowerCase();
+                            if (!query) {
+                                // Reset to the full list of donors from a separate state
+                                setDonors(allDonors);
+                            } else {
+                                const filteredDonors = allDonors.filter(donor =>
+                                    donor.label.toLowerCase().includes(query)
+                                );
+                                setDonors(filteredDonors);
+                            }
+                        }}
+                        field="label"
+                        onChange={(e) => {
+                            if (e.value && typeof e.value === 'string') {
+                                // Handle manual input
+                                setFormData({ ...formData, donorId: e.value });
+                            } else {
+                                // Handle selection from the list
+                                setFormData({ ...formData, donorId: e.value?.value || '' });
+                            }
+                        }}
+                        dropdown
+                        placeholder="Select a donor"
+                    />
                 </div>
                 <div className="field">
                     <label htmlFor="donationAmount">Donation amount</label>
