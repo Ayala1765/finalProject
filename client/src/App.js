@@ -13,6 +13,7 @@ import GetAllDonors from "./Components/GetAllDonors";
 import RecentDonations from "./Components/RecentDonations";
 import GetAllDonations from "./Components/GetAllDonations";
 import AddDonor from "./Components/AddDonor";
+import AdminAddDonation from "./Components/AdminAddDonation";
 
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
                 <Route path="/getAllDonors" element={<GetAllDonors />} />
                 <Route path="/getAllDonations" element={<GetAllDonations />} />
                 <Route path="/addDonor" element={<AddDonor />} />
+                <Route path="/adminAddDonation" element={<AdminAddDonation />} />
 
 
             </Routes>

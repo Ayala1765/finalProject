@@ -42,6 +42,13 @@ const NavigateAdmin = () => {
             command: () => {
                 navigate('/AddDonor')
             }
+        },
+        {
+            label: 'Add donation',
+            icon: 'pi pi-plus-circle',
+            command: () => {
+                navigate('/AdminAddDonation')
+            }
         }
        
 

@@ -60,15 +60,8 @@ const login = async (req, res) => {
     })
     console.log("!!!"+newDonor);
     
-    // יצירת טוקן (JWT)
-  //   const token = jwt.sign(
-  //     { id: user._id, role: user.role },
-  //     process.env.JWT_SECRET,
-  //     { expiresIn: '1h' }
-  // );
-  const token = jwt.sign({ id: donor._id, role: donor.role }, JWT_SECRET, {
-    expiresIn: '1h',
-  });
+
+  const token = jwt.sign({ id: donor._id, role: donor.role }, JWT_SECRET);
   console.log("✔✔✔✔"+token);
     res.status(200).send( {token,user:newDonor,role:donor.role });
   } catch (error) {
