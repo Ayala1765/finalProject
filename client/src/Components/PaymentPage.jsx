@@ -4,17 +4,12 @@ import { Button } from "primereact/button";
 import { Card } from "primereact/card";
 import { Toast } from 'primereact/toast';
 import axios from "axios";
-import { useNavigate,useLocation } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom';
 import "primereact/resources/themes/saga-blue/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import "primeflex/primeflex.css";
 import { useSelector } from 'react-redux';
-
-
-
-
-
 
 const PaymentPage = () => {
     const [cardNumber, setCardNumber] = useState("");
@@ -25,7 +20,8 @@ const PaymentPage = () => {
     const navigate = useNavigate();
     const { role } = useSelector((state) => state.token);
     const location = useLocation();
-    const updatedForm = location.state?.updatedForm; // קבלת הנתונים מהניווט
+    const updatedForm = location.state?.updatedForm;
+
     if (!updatedForm) {
         return <div>Error: No donation data provided.</div>;
     }
@@ -89,30 +85,43 @@ const PaymentPage = () => {
             return;
         }
 
-        // שליחת נתונים לשרת
+        // שליחת נתוני התשלום
         try {
-            try {
-                await axios.post("http://localhost:1135/donation", updatedForm)
-            } catch (err) {
-                toast.current.show({ severity: 'error', summary: 'Error', detail: 'Failed to send donation.', life: 3000 });
-            }
+            // שליחת פרטי אשראי
             const paymentData = { cardHolderName, cardNumber, expirationDate, cvv }
-            await axios.post("http://localhost:1135/creditDetails", paymentData)
+            await axios.post("http://localhost:1135/creditDetails", paymentData);
+
+            // פיצול תרומת פורים - רק אחרי שהתשלום עבר!
+            if (
+                updatedForm.event === 'Purim' &&
+                updatedForm.Day === 'both'
+            ) {
+                const half = Number(updatedForm.donationAmount) / 2;
+                const donation1 = { ...updatedForm, donationAmount: half, Day: 'yd' };
+                const donation2 = { ...updatedForm, donationAmount: half, Day: 'tv' };
+                await axios.post("http://localhost:1135/donation", donation1);
+                await axios.post("http://localhost:1135/donation", donation2);
+            } else {
+                await axios.post("http://localhost:1135/donation", updatedForm);
+            }
+
             toast.current.show({ severity: 'success', summary: 'Success', detail: 'Payment Successful!', life: 2000 });
             setTimeout(() => {
-                { role === "manager" ? navigate('/getAllDonations') : role === "user" ? navigate('/recentDonations') : <></> }
+                if (role === "manager") navigate('/getAllDonations');
+                else if (role === "user") navigate('/recentDonations');
             }, 2000);
 
         } catch (error) {
             toast.current.show({ severity: 'error', summary: 'Error', detail: 'Payment failed. Please try again.', life: 3000 });
-            // console.error("Error processing payment:", error.response?.data || error.message);
         }
-    }
+    };
+
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
             handlePayment();
         }
-    }
+    };
+
     return (
         <>
             <Toast ref={toast} />
@@ -153,8 +162,7 @@ const PaymentPage = () => {
                                 value={cvv}
                                 onChange={(e) => setCvv(e.target.value)}
                                 maxLength={4}
-                                onKeyDown={handleKeyDown} // Add this line
-
+                                onKeyDown={handleKeyDown}
                             />
                         </div>
 

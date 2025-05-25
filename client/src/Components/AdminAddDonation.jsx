@@ -16,7 +16,7 @@ import { AutoComplete } from 'primereact/autocomplete';
 
 const AdminAddDonation = () => {
     const { user } = useSelector((state) => state.token);
-    const [isTetvav, setIsTetvav] = useState(false);
+    const [whichDay, setWhichDay] = useState(false);
     const [isPurim, setIsPurim] = useState(false);
     const toast = useRef(null);
     const { token } = useSelector((state) => state.token);
@@ -39,12 +39,12 @@ const AdminAddDonation = () => {
 
     const eventOptions = [
         { label: 'Pesach', value: 'Pesach' },
-        { label: 'Shavuot', value: 'Shavuot' },
-        { label: 'RoshHshna', value: 'RoshHshna' },
-        { label: 'Sukut', value: 'Sukut' },
+        { label: 'Shavues', value: 'Shavues' },
+        { label: 'Rosh Hashana', value: 'Rosh Hashana' },
+        { label: 'Sukess', value: 'Sukess' },
         { label: 'Purim', value: 'Purim' },
         { label: 'General', value: 'General' },
-    ];
+    ]
 
     useEffect(() => {
         getDonors();
@@ -90,7 +90,7 @@ const AdminAddDonation = () => {
             toast.current.show({ severity: 'error', summary: 'Error', detail: 'Please select an event.', life: 3000 });
             return false;
         }
-        if (isPurim && !isTetvav) {
+        if (isPurim && !whichDay) {
             toast.current.show({ severity: 'error', summary: 'Error', detail: 'Please select a Purim day.', life: 3000 });
             return false;
         }
@@ -103,10 +103,12 @@ const AdminAddDonation = () => {
 
         const updatedForm = { ...formData };
 
-        if (isTetvav === "yd")
-            updatedForm.Day = 14;
-        if (isTetvav === "tv")
-            updatedForm.Day = 15;
+        if (whichDay === "yd")
+            updatedForm.Day = "yd";
+        if (whichDay === "tv")
+            updatedForm.Day = "yd";
+        if (whichDay === "both")
+            updatedForm.Day = "both";
 
         try {
             // שליחת התרומה לשרת
@@ -190,12 +192,16 @@ const AdminAddDonation = () => {
                         <div className="card flex flex-column align-items-center gap-3">
                             <label htmlFor="purim">You can choose which Purim the donation will be made on:</label>
                             <div className="flex align-items-center">
-                                <RadioButton inputId="ingredient3" name="pizza" value="yd" onChange={(e) => setIsTetvav(e.value)} checked={isTetvav === 'yd'} />
+                                <RadioButton inputId="ingredient3" name="pizza" value="yd" onChange={(e) => setWhichDay(e.value)} checked={whichDay === 'yd'} />
                                 <label htmlFor="yd" className="ml-2">י"ד | Purim Deprezim</label>
                             </div>
                             <div className="flex align-items-center">
-                                <RadioButton inputId="ingredient4" name="pizza" value="tv" onChange={(e) => setIsTetvav(e.value)} checked={isTetvav === 'tv'} />
+                                <RadioButton inputId="ingredient4" name="pizza" value="tv" onChange={(e) => setWhichDay(e.value)} checked={whichDay === 'tv'} />
                                 <label htmlFor="tv" className="ml-2">ט"ו | Purim Demokfin</label>
+                            </div>
+                            <div className="flex align-items-center">
+                                <RadioButton inputId="ingredient4" name="pizza" value="both" onChange={(e) => setWhichDay(e.value)} checked={whichDay === 'both'} />
+                                <label htmlFor="both" className="ml-2">bothOfTheDays</label>
                             </div>
                         </div>
                     ) : null}

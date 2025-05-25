@@ -15,8 +15,8 @@ const DonationSchema = new mongoose.Schema({
     required: true
   },
   Day: {
-    type: Number,
-    enum: [15, 14]
+    type: String,
+    enum: ['yd','tv','both']
   },
 
   donorId: {

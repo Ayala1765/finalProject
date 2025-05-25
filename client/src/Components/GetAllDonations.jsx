@@ -19,7 +19,17 @@ const GetAllDonations = () => {
         donationDate: { value: null, matchMode: 'custom' },
         donationAmount: { value: null, matchMode: 'custom' },
     });
-    const [events, setEvents] = useState([]);
+
+    // כל ערך value שונה!
+    const events = [
+        { label: 'Pesach', value: 'Pesach' },
+        { label: 'Shavues', value: 'Shavues' },
+        { label: 'Rosh Hashana', value: 'Rosh Hashana' },
+        { label: 'Sukess', value: 'Sukess' },
+        { label: 'Purim-י"ד', value: 'Purim-י"ד' },
+        { label: 'Purim-ט"ו', value: 'Purim-ט"ו' },
+        { label: 'General', value: 'General' },
+    ];
 
     useEffect(() => {
         const fetchDonations = async () => {
@@ -29,22 +39,38 @@ const GetAllDonations = () => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                const formatDate = response.data.map((donation) => ({
-                    ...donation,
-                    donationDate: format(new Date(donation.donationDate), 'yyyy-MM-dd'),
-                }));
-                setDonations(formatDate);
-                setEvents([...new Set(formatDate.map((donation) => donation.event))]); // יצירת רשימת אירועים ייחודיים
+                const formatDate = response.data.map((donation) => {
+                    let event = donation.event;
+                    const dayValue = (donation.Day || '').toString().toLowerCase().trim();
+                
+                    if (donation.event?.toLowerCase() === 'purim') {
+                        if (dayValue === 'yd') {
+                            event = 'Purim-י"ד';
+                        } else if (dayValue === 'tv') {
+                            event = 'Purim-ט"ו';
+                        } else if (dayValue === 'both') {
+                            event = 'Purim-י"ד וט"ו';
+                        } else {
+                            event = 'Purim-ט"ו';
+                            console.log('ערך לא מזוהה בשדה day עבור פורים:', donation.day, donation.Day, donation);
+                        }
+                    }
+                    return {
+                        ...donation,
+                        donationDate: format(new Date(donation.donationDate), 'dd-MM-yy'),
+                        event,
+                    };
+                })
+                setDonations(formatDate)
             } catch (err) {
-                setError(err.message);
+                setError(err.message)
             } finally {
-                setLoading(false);
+                setLoading(false)
             }
         };
-
+    
         fetchDonations();
     }, [token]);
-
     const donationDateFilterTemplate = (options) => {
         const [from, to] = options.value ?? [null, null];
 
@@ -55,14 +81,14 @@ const GetAllDonations = () => {
                     onChange={(e) => options.filterApplyCallback([e.value, to])}
                     placeholder="From"
                     dateFormat="yy-mm-dd"
-                    showIcon={false} 
+                    showIcon={false}
                 />
                 <Calendar
                     value={to}
                     onChange={(e) => options.filterApplyCallback([from, e.value])}
                     placeholder="To"
                     dateFormat="yy-mm-dd"
-                    showIcon={false} 
+                    showIcon={false}
                 />
             </div>
         );
@@ -107,7 +133,7 @@ const GetAllDonations = () => {
                     header="Donor Name"
                     filter
                     filterPlaceholder="Search by name"
-                    showFilterMenu={false} 
+                    showFilterMenu={false}
                     style={{ minWidth: '12rem' }}
                 />
                 <Column
@@ -115,7 +141,7 @@ const GetAllDonations = () => {
                     header="Event"
                     filter
                     filterElement={eventFilterTemplate}
-                    showFilterMenu={false} 
+                    showFilterMenu={false}
                     style={{ minWidth: '12rem' }}
                 />
                 <Column
@@ -129,9 +155,14 @@ const GetAllDonations = () => {
                 <Column
                     field="donationAmount"
                     header="Donation Amount"
-                    // filter
                     sortable
-                    showFilterMenu={false} 
+                    showFilterMenu={false}
+                    style={{ minWidth: '12rem' }}
+                />
+                <Column
+                    field="coinType"
+                    header="coin Type"
+                    showFilterMenu={false}
                     style={{ minWidth: '12rem' }}
                 />
             </DataTable>

@@ -11,16 +11,12 @@ import 'primereact/resources/themes/saga-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 import 'primeflex/primeflex.css';
-//import axios from "axios";
-import PaymentPage from './PaymentPage';
 
 const AddDonation = () => {
     const { user } = useSelector((state) => state.token);
-    const [isTetvav, setIsTetvav] = useState(false);
+    const [whichDay, setWhichDay] = useState(false);
     const [isPurim, setIsPurim] = useState(false);
     const toast = useRef(null);
-    const [updatedForm, setUpdatedForm] = useState(null)
-
 
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
@@ -39,12 +35,12 @@ const AddDonation = () => {
 
     const eventOptions = [
         { label: 'Pesach', value: 'Pesach' },
-        { label: 'Shavuot', value: 'Shavuot' },
-        { label: 'RoshHshna', value: 'RoshHshna' },
-        { label: 'Sukut', value: 'Sukut' },
+        { label: 'Shavues', value: 'Shavues' },
+        { label: 'Rosh Hashana', value: 'Rosh Hashana' },
+        { label: 'Sukess', value: 'Sukess' },
         { label: 'Purim', value: 'Purim' },
         { label: 'General', value: 'General' },
-    ];
+    ]
 
     // שינוי שדה בטופס
     const handleChange = (e, fieldName) => {
@@ -53,6 +49,7 @@ const AddDonation = () => {
             setIsPurim(true);
         } else if (fieldName === "event") {
             setIsPurim(false);
+            setWhichDay(false);
         }
     };
 
@@ -70,11 +67,10 @@ const AddDonation = () => {
             toast.current.show({ severity: 'error', summary: 'Error', detail: 'Please select an event.', life: 3000 });
             return false;
         }
-        if (isPurim && !isTetvav) {
+        if (isPurim && !whichDay) {
             toast.current.show({ severity: 'error', summary: 'Error', detail: 'Please select a Purim day.', life: 3000 });
             return false;
         }
-
         return true;
     };
 
@@ -82,14 +78,9 @@ const AddDonation = () => {
         if (e) e.preventDefault();
         if (!validateForm()) return;
 
-        const updatedFormData = { ...formData, donorId: user._id };
-
-        if (isTetvav === "yd")
-            updatedFormData.Day = 14
-        if (isTetvav === "tv")
-            updatedFormData.Day = 15
-        setUpdatedForm(updatedFormData)
-        navigate('/paymentPage', { state: { updatedForm: updatedFormData } });    }
+        const updatedFormData = { ...formData, donorId: user._id, Day: whichDay };
+        navigate('/paymentPage', { state: { updatedForm: updatedFormData } });
+    }
 
     return (
         <div className="p-fluid">
@@ -131,12 +122,16 @@ const AddDonation = () => {
                         <div className="card flex flex-column align-items-center gap-3">
                             <label htmlFor="purim">You can choose which Purim the donation will be made on:</label>
                             <div className="flex align-items-center">
-                                <RadioButton inputId="ingredient3" name="pizza" value="yd" onChange={(e) => setIsTetvav(e.value)} checked={isTetvav === 'yd'} />
+                                <RadioButton inputId="ingredient3" name="pizza" value="yd" onChange={(e) => setWhichDay(e.value)} checked={whichDay === 'yd'} />
                                 <label htmlFor="yd" className="ml-2">י"ד | Purim Deprezim</label>
                             </div>
                             <div className="flex align-items-center">
-                                <RadioButton inputId="ingredient4" name="pizza" value="tv" onChange={(e) => setIsTetvav(e.value)} checked={isTetvav === 'tv'} />
+                                <RadioButton inputId="ingredient4" name="pizza" value="tv" onChange={(e) => setWhichDay(e.value)} checked={whichDay === 'tv'} />
                                 <label htmlFor="tv" className="ml-2">ט"ו | Purim Demokfin</label>
+                            </div>
+                            <div className="flex align-items-center">
+                                <RadioButton inputId="ingredient5" name="pizza" value="both" onChange={(e) => setWhichDay(e.value)} checked={whichDay === 'both'} />
+                                <label htmlFor="both" className="ml-2">bothOfTheDays</label>
                             </div>
                         </div>
                     ) : null}
@@ -159,8 +154,7 @@ const AddDonation = () => {
                     type="submit"
                 />
             </form>
-            {console.log("Updated Form Data:", updatedForm)}
-         </div>
+        </div>
     );
 }
 

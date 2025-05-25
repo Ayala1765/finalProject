@@ -5,7 +5,7 @@ const Donor = require("../models/Donor")
 
 const addDonation = async (req, res) => {
     try {
-        const { donationAmount, coinType, notes, donorId, event } = req.body;
+        const { donationAmount, coinType, notes, donorId, event ,Day} = req.body;
         console.log(req.body);
         // בדיקות תקינות
         if (!donorId) {
@@ -24,6 +24,7 @@ const addDonation = async (req, res) => {
             notes,
             donorId,
             event,
+            Day:Day?Day:""
         });
         //alert('succses')
         res.status(201).json(donation);
