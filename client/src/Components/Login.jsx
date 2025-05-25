@@ -18,7 +18,6 @@ const Login = () => {
                 alert('Please fill in all fields.')
                 return
             }
-            console.log("👍👍😁😁💕💕"+email, password)
             const res = await axios.post('http://localhost:1135/auth/login', { email, password })
             console.log("!!!!!!!!!!!!!!!!!!"+res.data.user)
             dispatch(setUser(res.data.user))

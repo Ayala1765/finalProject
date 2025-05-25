@@ -34,7 +34,7 @@ const addDonation = async (req, res) => {
 };
 const getAllDonations = async (req, res) => {
     try {
-        const donations = await Donation.find().populate('donorId', 'name email').lean().sort({ donationDate: 1 });
+        const donations = await Donation.find().populate('donorId', 'name email').lean().sort({ donationDate: -1 });
 
         if (!donations || donations.length === 0) {
             return res.json([])

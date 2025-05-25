@@ -4,11 +4,17 @@ import { Button } from "primereact/button";
 import { Card } from "primereact/card";
 import { Toast } from 'primereact/toast';
 import axios from "axios";
-import { useNavigate } from 'react-router-dom'
+import { useNavigate,useLocation } from 'react-router-dom'
 import "primereact/resources/themes/saga-blue/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import "primeflex/primeflex.css";
+import { useSelector } from 'react-redux';
+
+
+
+
+
 
 const PaymentPage = () => {
     const [cardNumber, setCardNumber] = useState("");
@@ -17,6 +23,12 @@ const PaymentPage = () => {
     const [cvv, setCvv] = useState("");
     const toast = useRef(null);
     const navigate = useNavigate();
+    const { role } = useSelector((state) => state.token);
+    const location = useLocation();
+    const updatedForm = location.state?.updatedForm; // קבלת הנתונים מהניווט
+    if (!updatedForm) {
+        return <div>Error: No donation data provided.</div>;
+    }
 
     const handlePayment = async () => {
         // ולידציות
@@ -79,16 +91,21 @@ const PaymentPage = () => {
 
         // שליחת נתונים לשרת
         try {
-            const paymentData = { cardHolderName, cardNumber, expirationDate, cvv };
-            await axios.post("http://localhost:1135/creditDetails", paymentData);
+            try {
+                await axios.post("http://localhost:1135/donation", updatedForm)
+            } catch (err) {
+                toast.current.show({ severity: 'error', summary: 'Error', detail: 'Failed to send donation.', life: 3000 });
+            }
+            const paymentData = { cardHolderName, cardNumber, expirationDate, cvv }
+            await axios.post("http://localhost:1135/creditDetails", paymentData)
             toast.current.show({ severity: 'success', summary: 'Success', detail: 'Payment Successful!', life: 2000 });
             setTimeout(() => {
-                navigate('/recentDonations');
+                { role === "manager" ? navigate('/getAllDonations') : role === "user" ? navigate('/recentDonations') : <></> }
             }, 2000);
 
         } catch (error) {
             toast.current.show({ severity: 'error', summary: 'Error', detail: 'Payment failed. Please try again.', life: 3000 });
-            console.error("Error processing payment:", error.response?.data || error.message);
+            // console.error("Error processing payment:", error.response?.data || error.message);
         }
     }
     const handleKeyDown = (e) => {

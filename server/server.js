@@ -16,6 +16,7 @@ app.use("/donation",require("./routes/donations"))
 app.use("/event",require("./routes/events"))
 app.use("/auth",require("./routes/auth"))
 app.use("/creditDetails",require("./routes/creditDetails"))
+app.use("/category",require("./routes/category"))
+app.use("/supported", require("./routes/supported"));
 mongoose.connection.once('open',()=>{app.listen(PORT,()=>{console.log(`the port is ${PORT}`)})})
 mongoose.connection.on('error',err=>{})
-

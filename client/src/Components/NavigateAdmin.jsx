@@ -49,6 +49,13 @@ const NavigateAdmin = () => {
             command: () => {
                 navigate('/AdminAddDonation')
             }
+        },
+        {
+            label: 'Supported',
+            icon: 'pi pi-heart',
+            command: () => {
+                navigate('/supported')
+            }
         }
        
 

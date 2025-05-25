@@ -11,13 +11,16 @@ import 'primereact/resources/themes/saga-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 import 'primeflex/primeflex.css';
-import axios from "axios";
+//import axios from "axios";
+import PaymentPage from './PaymentPage';
 
 const AddDonation = () => {
     const { user } = useSelector((state) => state.token);
     const [isTetvav, setIsTetvav] = useState(false);
     const [isPurim, setIsPurim] = useState(false);
     const toast = useRef(null);
+    const [updatedForm, setUpdatedForm] = useState(null)
+
 
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
@@ -71,29 +74,22 @@ const AddDonation = () => {
             toast.current.show({ severity: 'error', summary: 'Error', detail: 'Please select a Purim day.', life: 3000 });
             return false;
         }
-        // אפשר להוסיף ולידציות נוספות כאן
+
         return true;
     };
 
-    // שליחת הטופס
     const handleSubmit = async (e) => {
         if (e) e.preventDefault();
         if (!validateForm()) return;
 
-        const updatedForm = { ...formData, donorId: user._id };
+        const updatedFormData = { ...formData, donorId: user._id };
 
         if (isTetvav === "yd")
-            updatedForm.Day = 14;
+            updatedFormData.Day = 14
         if (isTetvav === "tv")
-            updatedForm.Day = 15;
-
-        try {
-            await axios.post("http://localhost:1135/donation", updatedForm);
-            setTimeout(() => navigate('/PaymentPage'), 2000);
-        } catch (err) {
-            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Failed to send donation.', life: 3000 });
-        }
-    };
+            updatedFormData.Day = 15
+        setUpdatedForm(updatedFormData)
+        navigate('/paymentPage', { state: { updatedForm: updatedFormData } });    }
 
     return (
         <div className="p-fluid">
@@ -163,7 +159,8 @@ const AddDonation = () => {
                     type="submit"
                 />
             </form>
-        </div>
+            {console.log("Updated Form Data:", updatedForm)}
+         </div>
     );
 }
 

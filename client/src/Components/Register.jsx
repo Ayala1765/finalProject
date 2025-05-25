@@ -12,6 +12,7 @@ import axios from 'axios';
 import { Toast } from 'primereact/toast';
 
 import './FormDemo.css';
+import TermsAndConditions from './TermsAndConditions';
 
 const Register = () => {
     const [visible, setVisible] = useState(false);
@@ -144,10 +145,22 @@ const Register = () => {
                             </div>
                             <br />
                             <div className="field-checkbox">
-                                <Controller name="accept" control={control} rules={{ required: true }} render={({ field, fieldState }) => (
-                                    <Checkbox inputId={field.name} onChange={(e) => field.onChange(e.checked)} checked={field.value} className={classNames({ 'p-invalid': fieldState.invalid })} />
-                                )} />
-                                <label htmlFor="accept" className={classNames({ 'p-error': errors.accept })}>I agree to the terms and conditions*</label>
+                                <Controller
+                                    name="accept"
+                                    control={control}
+                                    rules={{ required: true }}
+                                    render={({ field, fieldState }) => (
+                                        <Checkbox
+                                            inputId={field.name}
+                                            onChange={(e) => field.onChange(e.checked)}
+                                            checked={field.value}
+                                            className={classNames({ 'p-invalid': fieldState.invalid })}
+                                        />
+                                    )}
+                                />
+                                <label htmlFor="accept" className={classNames({ 'p-error': errors.accept })}>
+                                    I agree to the <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer">terms and conditions</a>*
+                                </label>
                             </div>
                             <Button type="submit" label="Submit" className="mt-2" />
                         </form>

@@ -109,8 +109,11 @@ const AdminAddDonation = () => {
             updatedForm.Day = 15;
 
         try {
+            // שליחת התרומה לשרת
             await axios.post("http://localhost:1135/donation", updatedForm);
-            setTimeout(() => navigate('/PaymentPage'), 2000);
+
+            // ניווט לעמוד התשלום עם הנתונים
+            navigate('/PaymentPage', { state: { updatedForm } });
         } catch (err) {
             toast.current.show({ severity: 'error', summary: 'Error', detail: 'Failed to send donation.', life: 3000 });
         }
