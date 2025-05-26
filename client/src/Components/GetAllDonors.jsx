@@ -21,7 +21,7 @@ const GetAllDonors = () => {
             setLoading(true);
 
             try {
-                const response = await axios.get(`http://localhost:1135/donor`, {
+                const response = await axios.get(`http://localhost:1135/api/donor`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -63,7 +63,7 @@ const GetAllDonors = () => {
 
     const loadDonations = async (node) => {
         try {
-            const response = await axios.get(`http://localhost:1135/donation/${node.data.id}`, {
+            const response = await axios.get(`http://localhost:1135/api/donation/${node.data.id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }

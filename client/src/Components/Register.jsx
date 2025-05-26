@@ -10,48 +10,34 @@ import { Divider } from 'primereact/divider';
 import { classNames } from 'primereact/utils';
 import axios from 'axios';
 import { Toast } from 'primereact/toast';
-
-import './FormDemo.css';
-import TermsAndConditions from './TermsAndConditions';
+import './FormDemo.css'
 
 const Register = () => {
     const [visible, setVisible] = useState(false);
-
     const toast = useRef(null)
-
     const [formData, setFormData] = useState({});
-    const defaultValues = {
-
-    }
-
-
-    const { control, formState: { errors }, handleSubmit, reset } = useForm({ defaultValues });
-
+    const defaultValues = {}
+    const { control, formState: { errors }, handleSubmit, reset } = useForm({ defaultValues })
     const onSubmit = async (data) => {
-        setFormData(data);
+        setFormData(data)
         try {
-            const res = await axios.post('http://localhost:1135/auth/register', data)
-            console.log(res.data.message);
+            const res = await axios.post('http://localhost:1135/api/auth/register', data)
+            console.log(res.data.message)
             setVisible(false);
             reset()
-
             showGood(res.data.message)
         }
         catch (e) {
-            console.log(e.response.data.error);
+            console.log(e.response.data.error)
             showError(e.response.data.error)
-
-
         }
-    };
-
+    }
     const showError = (message) => {
-        toast.current.show({ severity: 'error', summary: 'Error', detail: message, life: 3000 });
-
-    };
+        toast.current.show({ severity: 'error', summary: 'Error', detail: message, life: 3000 })
+    }
     const showGood = (message) => {
-        toast.current.show({ severity: 'success', summary: 'Success', detail: message, life: 3000 });
-    };
+        toast.current.show({ severity: 'success', summary: 'Success', detail: message, life: 3000 })
+    }
     const passwordHeader = <h6>Pick a password</h6>;
     const passwordFooter = (
         <React.Fragment>
@@ -69,19 +55,16 @@ const Register = () => {
     return (
         <div className="form-demo">
             <Toast ref={toast} />
-
             <a style={{
-                color: 'blue',
+                color: 'green',
                 textDecoration: 'underline',
                 cursor: 'pointer'
             }} onClick={() => { setVisible(true) }}>
                 Donating for the first time?
             </a>
-            <h3></h3>
             <Dialog visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }}>
                 <div className="flex justify-content-center">
                     <div className="card">
-                        <h5 className="text-center">Register</h5>
                         <form onSubmit={handleSubmit(onSubmit)} className="p-fluid">
                             <div className="field">
                                 <span className="p-float-label">

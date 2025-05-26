@@ -52,7 +52,7 @@ const AdminAddDonation = () => {
 
     const getDonors = async () => {
         try {
-            const response = await axios.get(`http://localhost:1135/donor`, {
+            const response = await axios.get(`http://localhost:1135/api/donor`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -109,16 +109,7 @@ const AdminAddDonation = () => {
             updatedForm.Day = "yd";
         if (whichDay === "both")
             updatedForm.Day = "both";
-
-        try {
-            // שליחת התרומה לשרת
-            await axios.post("http://localhost:1135/donation", updatedForm);
-
-            // ניווט לעמוד התשלום עם הנתונים
-            navigate('/PaymentPage', { state: { updatedForm } });
-        } catch (err) {
-            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Failed to send donation.', life: 3000 });
-        }
+        navigate('/PaymentPage', { state: { updatedForm } })
     };
 
     return (

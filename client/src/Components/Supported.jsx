@@ -21,7 +21,7 @@ const Supported = () => {
 
     const getAllCategories = async () => {
         try {
-            const res = await axios.get('http://localhost:1135/category');
+            const res = await axios.get('http://localhost:1135/api/category');
             setSupported(res.data);
         } catch (err) {
             setError('שגיאה בטעינת הקטגוריות!');
@@ -32,10 +32,10 @@ const Supported = () => {
         setError('');
         try {
             if (dialogMode === 'add') {
-                const res = await axios.post('http://localhost:1135/category', { name: categoryName });
+                const res = await axios.post('http://localhost:1135/api/category', { name: categoryName });
                 setCategory(res.data)
             } else if (dialogMode === 'edit' && editId) {
-                await axios.put(`http://localhost:1135/category/${editId}`, { name: categoryName });
+                await axios.put(`http://localhost:1135/api/category/${editId}`, { name: categoryName });
             }
             setShowDialog(false);
             setCategoryName('');
@@ -48,7 +48,7 @@ const Supported = () => {
 
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`http://localhost:1135/category/${id}`)
+            await axios.delete(`http://localhost:1135/api/category/${id}`)
             getAllCategories()
         } catch (err) {
             setError('שגיאה במחיקה!')

@@ -1,11 +1,40 @@
 const Donation = require("../Models/Donation")
-const Event = require("../Models/Event")
 const Donor = require("../models/Donor")
+const nodemailer = require('nodemailer')
 
+const sendEmail = async (to, subject, html) => {
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.office365.com',
+        port: 587,
+        secure: false,
+        auth: {
+            user: process.env.OUTLOOK_USER,
+            pass: process.env.OUTLOOK_PASS,
+        },
+    });
+
+    const mailOptions = {
+        from: process.env.OUTLOOK_USER,
+        to: to,
+        subject: subject,
+        html: html,
+        replyTo: '',
+    }
+    console.log(to)
+    try {
+        console.log('Sending email...')
+        const response = await transporter.sendMail(mailOptions)
+        console.log('Email sent successfully:', response)
+        return response;
+    } catch (error) {
+        console.error('Error in sendEmail:', error.message)
+        throw error;
+    }
+};
 
 const addDonation = async (req, res) => {
     try {
-        const { donationAmount, coinType, notes, donorId, event ,Day} = req.body;
+        const { donationAmount, coinType, notes, donorId, event, Day } = req.body;
         console.log(req.body);
         // בדיקות תקינות
         if (!donorId) {
@@ -24,18 +53,25 @@ const addDonation = async (req, res) => {
             notes,
             donorId,
             event,
-            Day:Day?Day:""
-        });
-        //alert('succses')
-        res.status(201).json(donation);
+            Day: Day ? Day : ""
+        })
+        const donor =  await Donor.findById(donation.donorId).lean()
+        //{ email: "38328268636@mby.co.il" }
+        console.log(donor)
+        if (donor) {
+            await sendEmail(donor.email, 'Keren Y&Y', 'Thank you for your donation, more people in need will smile because of you!')
+            res.status(201).json(donation)
+            }
     } catch (error) {
-        console.error("Error in addDonation:", error.message);
-        res.status(500).json({ message: "Internal server error" });
+        console.error("Error in addDonation:", error.message)
+        res.status(500).json({ message: "Internal server error" })
     }
-};
+
+
+}
 const getAllDonations = async (req, res) => {
     try {
-        const donations = await Donation.find().populate('donorId', 'name email').lean().sort({ donationDate: -1 });
+        const donations = await Donation.find().populate('donorId', 'name email').lean().sort({ donationDate: -1 })
 
         if (!donations || donations.length === 0) {
             return res.json([])
@@ -48,7 +84,6 @@ const getAllDonations = async (req, res) => {
     }
 };
 const getByDonorId = async (req, res) => {
-    console.log("fkkkkkkkkkkkkkkkkkkk");
     const { donorId } = req.params
     if (!donorId) {
         return res.status(400).json({ message: "Donor ID is required" });
@@ -127,5 +162,3 @@ const deleteDonation = async (req, res) => {
 
 
 module.exports = { addDonation, getAllDonations, getByDonorId, updateDonation, deleteDonation }
-
-

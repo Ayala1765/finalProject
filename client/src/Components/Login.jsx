@@ -2,11 +2,11 @@ import React, { useState } from 'react'
 import axios from 'axios'
 import { InputText } from 'primereact/inputtext'
 import { Button } from 'primereact/button'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate} from 'react-router-dom'
 import Register from './Register'
 import { useDispatch } from 'react-redux';
 import { setToken, setUser, setRole } from '../redux/tokenSlice';
-
+import ForgetPassword from './ForgetPassword'
 const Login = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -18,7 +18,7 @@ const Login = () => {
                 alert('Please fill in all fields.')
                 return
             }
-            const res = await axios.post('http://localhost:1135/auth/login', { email, password })
+            const res = await axios.post('http://localhost:1135/api/auth/login', { email, password })
             console.log("!!!!!!!!!!!!!!!!!!"+res.data.user)
             dispatch(setUser(res.data.user))
             dispatch(setRole(res.data.role))
@@ -58,7 +58,9 @@ const Login = () => {
                             className="w-12rem"
                             onKeyDown={handleKeyDown} // Add this line
                         />
+                         
                     </div>
+
                     <Button
                         label="Login"
                         icon="pi pi-user"
@@ -67,6 +69,7 @@ const Login = () => {
                     />
                 </div>
             </div>
+           <ForgetPassword></ForgetPassword> 
             <Register></Register>
         </div>
     );

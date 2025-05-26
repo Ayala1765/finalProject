@@ -89,7 +89,7 @@ const PaymentPage = () => {
         try {
             // שליחת פרטי אשראי
             const paymentData = { cardHolderName, cardNumber, expirationDate, cvv }
-            await axios.post("http://localhost:1135/creditDetails", paymentData);
+            await axios.post("http://localhost:1135/api/creditDetails", paymentData);
 
             // פיצול תרומת פורים - רק אחרי שהתשלום עבר!
             if (
@@ -99,10 +99,10 @@ const PaymentPage = () => {
                 const half = Number(updatedForm.donationAmount) / 2;
                 const donation1 = { ...updatedForm, donationAmount: half, Day: 'yd' };
                 const donation2 = { ...updatedForm, donationAmount: half, Day: 'tv' };
-                await axios.post("http://localhost:1135/donation", donation1);
-                await axios.post("http://localhost:1135/donation", donation2);
+                await axios.post("http://localhost:1135/api/donation", donation1);
+                await axios.post("http://localhost:1135/api/donation", donation2);
             } else {
-                await axios.post("http://localhost:1135/donation", updatedForm);
+                await axios.post("http://localhost:1135/api/donation", updatedForm);
             }
 
             toast.current.show({ severity: 'success', summary: 'Success', detail: 'Payment Successful!', life: 2000 });

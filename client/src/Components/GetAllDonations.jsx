@@ -6,6 +6,9 @@ import { Calendar } from 'primereact/calendar';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { format } from 'date-fns';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+import { Button } from 'primereact/button';
 
 const GetAllDonations = () => {
     const { token } = useSelector((state) => state.token);
@@ -16,11 +19,10 @@ const GetAllDonations = () => {
         global: { value: null, matchMode: 'contains' },
         'donorId.name': { value: null, matchMode: 'startsWith' },
         event: { value: null, matchMode: 'equals' },
-        donationDate: { value: null, matchMode: 'custom' },
+        donationDate: { value: null, matchMode: 'between' },
         donationAmount: { value: null, matchMode: 'custom' },
     });
 
-    // כל ערך value שונה!
     const events = [
         { label: 'Pesach', value: 'Pesach' },
         { label: 'Shavues', value: 'Shavues' },
@@ -34,15 +36,13 @@ const GetAllDonations = () => {
     useEffect(() => {
         const fetchDonations = async () => {
             try {
-                const response = await axios.get(`http://localhost:1135/donation`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
+                const response = await axios.get('http://localhost:1135/api/donation', {
+                    headers: { Authorization: `Bearer ${token}` },
                 });
-                const formatDate = response.data.map((donation) => {
+                const formatted = response.data.map((donation) => {
                     let event = donation.event;
                     const dayValue = (donation.Day || '').toString().toLowerCase().trim();
-                
+
                     if (donation.event?.toLowerCase() === 'purim') {
                         if (dayValue === 'yd') {
                             event = 'Purim-י"ד';
@@ -52,28 +52,59 @@ const GetAllDonations = () => {
                             event = 'Purim-י"ד וט"ו';
                         } else {
                             event = 'Purim-ט"ו';
-                            console.log('ערך לא מזוהה בשדה day עבור פורים:', donation.day, donation.Day, donation);
                         }
                     }
                     return {
                         ...donation,
-                        donationDate: format(new Date(donation.donationDate), 'dd-MM-yy'),
+                        donationDate: new Date(donation.donationDate), // שמור כ-date!
                         event,
                     };
-                })
-                setDonations(formatDate)
+                });
+                setDonations(formatted);
             } catch (err) {
-                setError(err.message)
+                setError(err.message);
             } finally {
-                setLoading(false)
+                setLoading(false);
             }
         };
-    
+
         fetchDonations();
     }, [token]);
+
+    const refreshDonations = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.get('http://localhost:1135/api/donation', {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+            setDonations(response.data);
+        } catch (err) {
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const exportToExcel = () => {
+        const filteredDonations = donations.map(donation => ({
+            name: donation.donorId.name,
+            amount: donation.donationAmount,
+            coinType: donation.coinType,
+            event: donation.event,
+            date: format(donation.donationDate, 'dd-MM-yy')
+        }));
+        const ws = XLSX.utils.json_to_sheet(filteredDonations);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Donations');
+        const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+        const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
+        saveAs(data, 'donations.xlsx');
+    }
+
+    const paginatorLeft = <Button type="button" onClick={refreshDonations} icon="pi pi-refresh" text />;
+    const paginatorRight = <Button type="button" onClick={exportToExcel} icon="pi pi-download" text />;
+
     const donationDateFilterTemplate = (options) => {
         const [from, to] = options.value ?? [null, null];
-
         return (
             <div className="flex gap-2">
                 <Calendar
@@ -94,18 +125,16 @@ const GetAllDonations = () => {
         );
     };
 
-    const eventFilterTemplate = (options) => {
-        return (
-            <Dropdown
-                value={options.value}
-                options={events}
-                onChange={(e) => options.filterApplyCallback(e.value)}
-                placeholder="Select Event"
-                className="p-column-filter"
-                showClear
-            />
-        );
-    };
+    const eventFilterTemplate = (options) => (
+        <Dropdown
+            value={options.value}
+            options={events}
+            onChange={(e) => options.filterApplyCallback(e.value)}
+            placeholder="Select Event"
+            className="p-column-filter"
+            showClear
+        />
+    );
 
     if (loading) {
         return <p>Loading...</p>;
@@ -127,6 +156,8 @@ const GetAllDonations = () => {
                 loading={loading}
                 globalFilterFields={['donorId.name']}
                 emptyMessage="No donations found."
+                paginatorLeft={paginatorLeft}
+                paginatorRight={paginatorRight}
             >
                 <Column
                     field="donorId.name"
@@ -151,6 +182,7 @@ const GetAllDonations = () => {
                     filterElement={donationDateFilterTemplate}
                     showFilterMenu={false}
                     style={{ minWidth: '12rem' }}
+                    body={rowData => format(rowData.donationDate, 'dd-MM-yy')}
                 />
                 <Column
                     field="donationAmount"

@@ -25,7 +25,7 @@ const ViewSupported = ({ category, onClose }) => {
 
     const fetchSupported = async () => {
         try {
-            const res = await axios.get('http://localhost:1135/supported');
+            const res = await axios.get('http://localhost:1135/api/supported');
             setSupported(res.data.filter(sup => sup.category?.name === category.name));
         } catch (err) {
             showErrorToast('Failed to load supported people');
@@ -39,7 +39,7 @@ const ViewSupported = ({ category, onClose }) => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const res = await axios.get('http://localhost:1135/category');
+                const res = await axios.get('http://localhost:1135/api/category');
                 setCategories(res.data);
             } catch (err) {
                 showErrorToast('Failed to load categories');
@@ -78,7 +78,7 @@ const ViewSupported = ({ category, onClose }) => {
         if (!validateForm()) return;
         try {
             if (dialogMode === 'add') {
-                await axios.post('http://localhost:1135/supported', {
+                await axios.post('http://localhost:1135/api/supported', {
                     name: newRow.name,
                     contactName: newRow.contactName,
                     contactPhone: newRow.contactPhone,
@@ -86,7 +86,7 @@ const ViewSupported = ({ category, onClose }) => {
                 });
                 showSuccessToast('Supported person added successfully!');
             } else if (dialogMode === 'edit' && editId) {
-                await axios.put(`http://localhost:1135/supported/${editId}`, {
+                await axios.put(`http://localhost:1135/api/supported/${editId}`, {
                     name: newRow.name,
                     contactName: newRow.contactName,
                     contactPhone: newRow.contactPhone,
@@ -109,7 +109,7 @@ const ViewSupported = ({ category, onClose }) => {
 
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`http://localhost:1135/supported/${id}`);
+            await axios.delete(`http://localhost:1135/api/supported/${id}`);
             showSuccessToast('Supported person deleted!');
             fetchSupported();
         } catch (err) {

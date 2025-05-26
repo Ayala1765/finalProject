@@ -13,7 +13,7 @@ const RecentDonations = () => {
     useEffect(() => {
         const fetchDonations = async () => {
             try {
-                const response = await axios.get(`http://localhost:1135/donation/${user._id}`)
+                const response = await axios.get(`http://localhost:1135/api/donation/${user._id}`)
                 const formatDate = response.data.map(donation => ({
                     ...donation,
                     donationDate: format(new Date(donation.donationDate), 'yyyy-MM-dd') 
