@@ -2,19 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { TreeTable } from 'primereact/treetable';
 import { Column } from 'primereact/column';
 import { useSelector } from 'react-redux';
-import axios from 'axios';
+import axios from 'axios'
+
+
 
 const GetAllDonors = () => {
-    const { token } = useSelector((state) => state.token);
-    const [donors, setDonors] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const { token } = useSelector((state) => state.token)
+    const [donors, setDonors] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
 
     useEffect(() => {
         if (!token) {
-            setError("Token is missing");
-            setLoading(false);
-            return;
+            setError("Token is missing")
+            setLoading(false)
+            return
         }
 
         const fetchDonors = async () => {
@@ -110,7 +112,7 @@ const GetAllDonors = () => {
         return <p>Error: {error}</p>;
     }
 
-    return (
+    return (<>
         <div className="card">
             <TreeTable value={donors} tableStyle={{ minWidth: '50rem' }} onExpand={handleExpand}>
                 <Column field="name" header="Name" expander></Column>
@@ -118,6 +120,8 @@ const GetAllDonors = () => {
                 <Column field="phone" header="Phone"></Column>
             </TreeTable>
         </div>
+      
+    </>
     );
 };
 

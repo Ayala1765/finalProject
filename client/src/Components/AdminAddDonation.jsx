@@ -12,7 +12,8 @@ import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 import 'primeflex/primeflex.css';
 import axios from "axios";
-import { AutoComplete } from 'primereact/autocomplete';
+import { AutoComplete } from 'primereact/autocomplete'
+import { coinOptions, eventOptions } from '../options'
 
 const AdminAddDonation = () => {
     const { user } = useSelector((state) => state.token);
@@ -32,19 +33,7 @@ const AdminAddDonation = () => {
         event: '',
     });
 
-    const coinOptions = [
-        { label: '$', value: '$' },
-        { label: '₪', value: '₪' },
-    ];
 
-    const eventOptions = [
-        { label: 'Pesach', value: 'Pesach' },
-        { label: 'Shavues', value: 'Shavues' },
-        { label: 'Rosh Hashana', value: 'Rosh Hashana' },
-        { label: 'Sukess', value: 'Sukess' },
-        { label: 'Purim', value: 'Purim' },
-        { label: 'General', value: 'General' },
-    ]
 
     useEffect(() => {
         getDonors();
@@ -58,11 +47,11 @@ const AdminAddDonation = () => {
                 },
             });
             const formattedDonors = response.data.map(donor => ({
-                label: donor.name, // Display name
-                value: donor._id,  // Donor ID
+                label: donor.name,
+                value: donor._id,
             }));
-            setAllDonors(formattedDonors); // Store the full list
-            setDonors(formattedDonors);    // Set the initial list
+            setAllDonors(formattedDonors)
+            setDonors(formattedDonors)
         } catch (err) {
             console.error("Error fetching donors:", err);
         }
@@ -120,12 +109,11 @@ const AdminAddDonation = () => {
                 <div className="field">
                     <label htmlFor="donorId">Select Donor</label>
                     <AutoComplete
-                        value={donors.find(donor => donor.value === formData.donorId)?.label || formData.donorId || ''} // Display the donor's name or typed value
+                        value={donors.find(donor => donor.value === formData.donorId)?.label || formData.donorId || ''}
                         suggestions={donors}
                         completeMethod={(e) => {
                             const query = e.query.toLowerCase();
                             if (!query) {
-                                // Reset to the full list of donors from a separate state
                                 setDonors(allDonors);
                             } else {
                                 const filteredDonors = allDonors.filter(donor =>
@@ -134,13 +122,12 @@ const AdminAddDonation = () => {
                                 setDonors(filteredDonors);
                             }
                         }}
+                        onDropdownClick={() => setDonors(allDonors)}
                         field="label"
                         onChange={(e) => {
                             if (e.value && typeof e.value === 'string') {
-                                // Handle manual input
                                 setFormData({ ...formData, donorId: e.value });
                             } else {
-                                // Handle selection from the list
                                 setFormData({ ...formData, donorId: e.value?.value || '' });
                             }
                         }}

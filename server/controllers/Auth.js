@@ -3,11 +3,11 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const crypto = require('crypto')
 const Donor = require("../models/Donor")
-const nodemailer = require('nodemailer');
+const nodemailer = require('nodemailer')
 
 const sendEmail = async (to, subject, html) => {
     const transporter = nodemailer.createTransport({
-        service: 'gmail',
+        service: 'outlook',
         auth: {
             user: process.env.OUTLOOK_USER, // כתובת המייל שלך
             pass: process.env.OUTLOOK_PASS // סיסמה/סיסמת אפליקציה
@@ -92,21 +92,17 @@ const sendVerificationCode = async (req, res) => {
   }
 
   try {
-    const user = await Donor.findOne({ email }).exec(); // תיקון: Donor לא User
+    const user = await Donor.findOne({ email }).exec()
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });
     }
-
     const verificationCode = crypto.randomInt(100000, 999999);
-    verificationCodes[email] = verificationCode;
-
+    verificationCodes[email] = verificationCode
     const emailHtml = `
       <p>Your password reset verification code is: <strong>${verificationCode}</strong></p>
       <p>If you did not request this, please ignore this email.</p>
     `;
-
-    await sendEmail(email, 'Password Reset Verification Code', emailHtml);
-
+   await sendEmail(email, 'Password Reset Verification Code', emailHtml);
     res.status(200).json({ message: 'Verification code sent to email.' });
   } catch (err) {
     res.status(500).json({ message: 'Error sending verification code.', error: err.message });
@@ -120,27 +116,21 @@ const resetPasswordWithCode = async (req, res) => {
   if (!email || !verificationCode || !newPassword) {
     return res.status(400).json({ message: 'Email, verification code, and new password are required.' });
   }
-
   try {
     if (verificationCodes[email] !== parseInt(verificationCode)) {
-      return res.status(400).json({ message: 'Invalid verification code.' });
+      return res.status(400).json({ message: 'Invalid verification code.' })
     }
-
-    const user = await Donor.findOne({ email }).exec(); // תיקון: Donor לא User
+    const user = await Donor.findOne({ email }).exec()
     if (!user) {
-      return res.status(404).json({ message: 'User not found.' });
+      return res.status(404).json({ message: 'User not found.' })
     }
-
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const hashedPassword = await bcrypt.hash(newPassword, 10)
     user.password = hashedPassword;
     await user.save();
-
     delete verificationCodes[email];
-
     res.status(200).json({ message: 'Password reset successfully.' });
   } catch (err) {
     res.status(500).json({ message: 'Error resetting password.', error: err.message });
   }
-};
-
+}
 module.exports = { register, login, resetPasswordWithCode, sendVerificationCode,sendEmail };

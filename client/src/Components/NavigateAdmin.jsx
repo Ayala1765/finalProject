@@ -62,10 +62,25 @@ const NavigateAdmin = () => {
     ]
     const end = (
         <div className="flex align-items-center gap-2">
-            <Button onClick={() => {
-                dispatch(logOut());
-                navigate('/')
-            }}>Logout</Button>
+            <Button
+                icon="pi pi-sign-out"
+                className="p-button-rounded p-button-success"
+                style={{
+                    width: '3rem',
+                    height: '3rem',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '1.3rem',
+                
+                }}
+                onClick={() => {
+                    dispatch(logOut());
+                    navigate('/')
+                }}
+                aria-label="Logout"
+            />
         </div>
     )
     return (<>

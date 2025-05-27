@@ -13,9 +13,8 @@ const TermsAndConditions = () => {
                 <li>We reserve the right to modify these terms at any time.</li>
                 <li>Use of this platform must comply with all applicable laws and regulations.</li>
             </ul>
-    
         </div>
-    );
-};
+    )
+}
 
 export default TermsAndConditions;

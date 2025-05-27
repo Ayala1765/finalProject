@@ -33,10 +33,12 @@ const ForgotPasswordDialog = () => {
 
     // שליחת קוד לאימייל
     const handleSendCode = async () => {
+        
         setLoading(true);
         setMessage("");
         try {
-            const res = await axios.post("/api/auth/sendVerificationCode", { email });
+            const res = await axios.post("http://localhost:1135/api/auth/sendVerificationCode", { email })
+            console.log(res);
             setMessage(res.data.message);
             setStep(2);
         } catch (e) {
@@ -50,7 +52,7 @@ const ForgotPasswordDialog = () => {
         setLoading(true);
         setMessage("");
         try {
-            const res = await axios.post("/api/auth/resetPasswordWithCode", {
+            const res = await axios.post("http://localhost:1135/api/auth/resetPasswordWithCode", {
                 email,
                 verificationCode,
                 newPassword,

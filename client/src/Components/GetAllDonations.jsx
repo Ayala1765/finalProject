@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { Dropdown } from 'primereact/dropdown';
-import { Calendar } from 'primereact/calendar';
-import { useSelector } from 'react-redux';
-import axios from 'axios';
-import { format } from 'date-fns';
-import * as XLSX from 'xlsx';
-import { saveAs } from 'file-saver';
-import { Button } from 'primereact/button';
+import React, { useState, useEffect } from 'react'
+import { DataTable } from 'primereact/datatable'
+import { Column } from 'primereact/column'
+import { Dropdown } from 'primereact/dropdown'
+import { Calendar } from 'primereact/calendar'
+import { useSelector } from 'react-redux'
+import axios from 'axios'
+import { format } from 'date-fns'
+import * as XLSX from 'xlsx'
+import { saveAs } from 'file-saver'
+import { Button } from 'primereact/button'
+import Visual from './Visual'
+
 
 const GetAllDonations = () => {
     const { token } = useSelector((state) => state.token);
@@ -56,7 +58,7 @@ const GetAllDonations = () => {
                     }
                     return {
                         ...donation,
-                        donationDate: new Date(donation.donationDate), // שמור כ-date!
+                        donationDate: new Date(donation.donationDate),
                         event,
                     };
                 });
@@ -144,7 +146,7 @@ const GetAllDonations = () => {
         return <p>Error: {error}</p>;
     }
 
-    return (
+    return (<>
         <div className="card">
             <DataTable
                 value={donations}
@@ -199,6 +201,8 @@ const GetAllDonations = () => {
                 />
             </DataTable>
         </div>
+        <Visual></Visual>
+    </>
     );
 };
 

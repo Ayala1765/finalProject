@@ -11,6 +11,8 @@ import { classNames } from 'primereact/utils';
 import axios from 'axios';
 import { Toast } from 'primereact/toast';
 import './FormDemo.css'
+import { Route, Routes } from 'react-router-dom';
+import TermsAndConditions from './TermsAndConditions'
 
 const Register = () => {
     const [visible, setVisible] = useState(false);
@@ -144,6 +146,8 @@ const Register = () => {
                                 <label htmlFor="accept" className={classNames({ 'p-error': errors.accept })}>
                                     I agree to the <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer">terms and conditions</a>*
                                 </label>
+
+
                             </div>
                             <Button type="submit" label="Submit" className="mt-2" />
                         </form>

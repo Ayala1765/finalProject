@@ -10,7 +10,8 @@ import { useNavigate } from 'react-router-dom';
 import 'primereact/resources/themes/saga-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
-import 'primeflex/primeflex.css';
+import 'primeflex/primeflex.css'
+import { coinOptions, eventOptions } from '../options'
 
 const AddDonation = () => {
     const { user } = useSelector((state) => state.token);
@@ -26,21 +27,9 @@ const AddDonation = () => {
         notes: '',
         donorId: '',
         event: '',
-    });
+    })
 
-    const coinOptions = [
-        { label: '$', value: '$' },
-        { label: '₪', value: '₪' },
-    ];
-
-    const eventOptions = [
-        { label: 'Pesach', value: 'Pesach' },
-        { label: 'Shavues', value: 'Shavues' },
-        { label: 'Rosh Hashana', value: 'Rosh Hashana' },
-        { label: 'Sukess', value: 'Sukess' },
-        { label: 'Purim', value: 'Purim' },
-        { label: 'General', value: 'General' },
-    ]
+ 
 
     // שינוי שדה בטופס
     const handleChange = (e, fieldName) => {

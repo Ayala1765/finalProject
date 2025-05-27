@@ -43,9 +43,7 @@ const addDonation = async (req, res) => {
         if (!donationAmount || donationAmount <= 0) {
             return res.status(400).json({ message: "Donation amount must be greater than 0." });
         }
-        if (!['$', '₪'].includes(coinType)) {
-            return res.status(400).json({ message: "Invalid coin type. Must be '$' or '₪'." });
-        }
+       
         // יצירת התרומה
         const donation = await Donation.create({
             donationAmount,

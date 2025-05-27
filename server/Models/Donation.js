@@ -11,7 +11,6 @@ const DonationSchema = new mongoose.Schema({
   },
   coinType: {
     type: String,
-    enum: ['$', '₪'],
     required: true
   },
   Day: {

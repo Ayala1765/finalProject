@@ -11,29 +11,34 @@ import { Toast } from 'primereact/toast';
 import { useNavigate } from 'react-router-dom'
 import './FormDemo.css';
 import GetAllDonors from './GetAllDonors';
+import { Checkbox } from "primereact/checkbox";
+
 
 const AddDonor = () => {
     const navigate = useNavigate()
+    const [checked, setChecked] = useState(false);
 
     const toast = useRef(null)
 
     // const [message, setMessage] = useState()
     const [formData, setFormData] = useState({});
-    const defaultValues = {
-
-    }
-
-
+    const defaultValues = {}
     const { control, formState: { errors }, handleSubmit, reset } = useForm({ defaultValues });
-
     const onSubmit = async (data) => {
-        setFormData(data);
+
+        const finalData = {...data}
+
+        if (checked) {
+            finalData.name = finalData.name + " seminary";
+
+        }
+        setFormData(finalData);
         try {
-            const res = await axios.post('http://localhost:1135/auth/register', data)
+            const res = await axios.post('http://localhost:1135/api/auth/register', finalData)
             console.log(res.data.message);
             reset()
             showGood(res.data.message)
-            navigate ('/GetAllDonors')
+            navigate('/GetAllDonors')
         }
         catch (e) {
             console.log(e.response.data.error);
@@ -77,6 +82,10 @@ const AddDonor = () => {
                                     <InputText id={field.name} {...field} autoFocus className={classNames({ 'p-invalid': fieldState.invalid })} />
                                 )} />
                                 <label htmlFor="name" className={classNames({ 'p-error': errors.name })}>Name*</label>
+                               seminary? <Checkbox
+                                    onChange={e => setChecked(e.checked)}
+                                    checked={checked}
+                                > </Checkbox>
                             </span>
                         </div>
                         <div className="field">
@@ -133,7 +142,7 @@ const AddDonor = () => {
                         </div>
                         <br />
                         <div className="field-checkbox">
-                           
+
                         </div>
                         <Button type="submit" label="Submit" className="mt-2" />
                     </form>
