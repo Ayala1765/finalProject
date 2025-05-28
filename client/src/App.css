@@ -1,38 +1,802 @@
-.App {
-  text-align: center;
+/* global.css או App.css */
+
+/* --- גלובליות עדינות --- */
+body {
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: #333;
+  background-color: #f9f9f9;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
 }
 
-.App-logo {
-  height: 40vmin;
+h1, h2, h3, h4, h5, h6 {
+  color: #2c3e50;
+  margin-bottom: 0.8em;
+}
+
+/* --- קומפוננטת About.jsx --- */
+.about-page-content {
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  max-width: 900px;
+  margin: 40px auto;
+}
+
+.about-page-content h1 {
+  color: #28a745;
+  font-size: 2.8em;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.about-page-content h4 {
+  color: #555;
+  font-size: 1.2em;
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+
+/* --- קומפוננטות טופס: AdminAddDonation.jsx ו-AddDonor.jsx --- */
+.form-card-container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.form-card-container h2 {
+  text-align: center;
+  color: #1e88e5;
+  margin-bottom: 30px;
+  font-size: 2em;
+}
+
+.form-card-container .field {
+  margin-bottom: 25px;
+}
+
+.form-card-container .field label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #444;
+  font-size: 0.95em;
+}
+
+/* סגנונות עבור כל רכיבי הקלט בתוך הטפסים, כולל AutoComplete */
+.form-card-container .p-inputtext,
+.form-card-container .p-dropdown,
+.form-card-container .p-inputtextarea,
+.form-card-container .p-password,
+.form-card-container .p-autocomplete .p-inputtext { /* ספציפי ל-AutoComplete */
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+/* סגנונות פוקוס (Focus) עבור כל רכיבי הקלט */
+.form-card-container .p-inputtext:focus,
+.form-card-container .p-dropdown:focus .p-dropdown-trigger,
+.form-card-container .p-dropdown:focus,
+.form-card-container .p-inputtextarea:focus,
+.form-card-container .p-password:focus-within,
+.form-card-container .p-autocomplete.p-focus .p-inputtext { /* ספציפי ל-AutoComplete בפוקוס */
+  border-color: #1e88e5;
+  box-shadow: 0 0 0 0.2rem rgba(30, 136, 229, 0.25);
+}
+
+/* כפתורי RadioButton ב-AdminAddDonation.jsx */
+.form-card-container .purim-options-card {
+  background-color: #f0f8ff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+  border: 1px solid #e0e0e0;
+}
+
+.form-card-container .purim-options-card label {
+  font-weight: normal;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.form-card-container .purim-options-card .flex.align-items-center {
+  margin-bottom: 10px;
+}
+
+/* כפתור ה-Submit (Send) בטפסים */
+.form-card-container .p-button {
+  font-size: 1.1em;
+  padding: 12px 25px;
+  border-radius: 5px;
+  margin-top: 20px;
+  transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-card-container .p-button-success {
+  background-color: #28a745 !important;
+  border-color: #28a745 !important;
+}
+
+.form-card-container .p-button-success:hover {
+  background-color: #218838 !important;
+  border-color: #1e7e34 !important;
+}
+
+.form-card-container .p-button:not(.p-button-success) {
+  background-color: #1e88e5;
+  border-color: #1e88e5;
+}
+
+.form-card-container .p-button:not(.p-button-success):hover {
+  background-color: #1565c0;
+  border-color: #1565c0;
+}
+
+/* עיצוב Password Footer ב-AddDonor */
+.form-card-container .p-password-panel .p-password-footer ul {
+  list-style-type: disc;
+  color: #666;
+}
+
+/* סגנון לתיבת סימון של "seminary" ב-AddDonor */
+.form-card-container .p-checkbox-box {
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background-color: #f0f0f0;
+}
+
+.form-card-container .p-checkbox.p-highlight .p-checkbox-box {
+  background-color: #1e88e5;
+  border-color: #1e88e5;
+}
+
+.form-card-container .field span label + .p-checkbox {
+  margin-left: 5px;
+  vertical-align: middle;
+}
+
+/* סגנון להודעות שגיאה של ולידציה */
+.p-error {
+  color: #ef4444;
+  font-size: 0.85em;
+  margin-top: 5px;
+  display: block;
+}
+
+/* תיקון ל-p-float-label כדי לוודא שתווית השגיאה לא משפיעה על המיקום */
+.p-float-label label {
+  pointer-events: none;
+}
+.p-float-label.p-focus label,
+.p-float-label.p-filled label {
+  top: -0.75rem;
+  font-size: 12px;
+  color: #4CAF50;
+}
+
+/* עבור שדה הטלפון שמקבל unfield (ב-AddDonor) */
+.form-card-container .unfield {
+  margin-top: 25px;
+}
+
+/* --- קומפוננטת GetAllDonations.jsx (טבלה) --- */
+.card.donations-table-container {
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  max-width: 1200px;
+}
+
+/* רכיבי סינון בתוך עמודות הטבלה (Dropdown, Calendar, InputText) */
+.donations-table-container .p-column-filter {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #e0e0e0;
+  box-shadow: none;
+}
+
+.donations-table-container .p-column-filter:focus {
+  border-color: #1e88e5;
+  box-shadow: 0 0 0 0.2rem rgba(30, 136, 229, 0.25);
+}
+
+.donations-table-container .p-calendar .p-inputtext {
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+/* כפתורי Paginator Left/Right (Refresh, Download) */
+.donations-table-container .p-paginator .p-button.p-button-text {
+  color: #1e88e5;
+  font-size: 1em;
+  padding: 0.75rem 1rem;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.donations-table-container .p-paginator .p-button.p-button-text:hover {
+  background-color: rgba(30, 136, 229, 0.1);
+  color: #1565c0;
+}
+
+/* עיצוב כללי של ה-DataTable (שורות, כותרות, תאים) */
+.donations-table-container .p-datatable {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.donations-table-container .p-datatable-header {
+  background-color: #f8f8f8;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #e0e0e0;
+  font-weight: 600;
+  color: #444;
+}
+
+.donations-table-container .p-datatable-thead > tr > th {
+  background-color: #eef2f6;
+  color: #333;
+  font-weight: 700;
+  padding: 1rem 1rem;
+  border-bottom: 1px solid #e0e0e0;
+  border-right: 1px solid #f0f0f0;
+}
+
+.donations-table-container .p-datatable-tbody > tr > td {
+  padding: 1rem 1rem;
+  border-bottom: 1px solid #f0f0f0;
+  border-right: 1px solid #f8f8f8;
+  color: #555;
+}
+
+.donations-table-container .p-datatable-tbody > tr:nth-child(even) {
+  background-color: #fdfdfd;
+}
+
+.donations-table-container .p-datatable-tbody > tr:hover {
+  background-color: #f5f5f5;
+}
+
+.donations-table-container .p-datatable-emptymessage td {
+  text-align: center;
+  padding: 2rem;
+  color: #777;
+}
+
+/* גלובל פילטר - שדה חיפוש כללי */
+.donations-table-container .p-datatable-globalfilter-container .p-inputtext {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+.donations-table-container .p-datatable-globalfilter-container .p-inputtext:focus {
+  border-color: #1e88e5;
+  box-shadow: 0 0 0 0.2rem rgba(30, 136, 229, 0.25);
+}
+
+/* Paginator כללי */
+.donations-table-container .p-paginator {
+  background-color: #f8f8f8;
+  border-top: 1px solid #e0e0e0;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0 0 8px 8px;
+}
+
+/* התאמות ל-PrimeFlex Utilities בתוך הסינונים */
+.donations-table-container .flex.gap-2 {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* הוספה/תיקון של סגנונות ספציפיים ל-AutoComplete */
+.form-card-container .p-autocomplete {
+  width: 100%; /* ודא שהוא תופס את כל הרוחב */
+}
+
+/* וודא שה-input בתוך AutoComplete נראה טוב */
+.form-card-container .p-autocomplete .p-inputtext {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 12px 15px;
+  width: 100%;
+}
+
+/* סגנון כפתור הדרופדאון של AutoComplete */
+.form-card-container .p-autocomplete .p-autocomplete-dropdown {
+  background-color: #f8f8f8;
+  border-left: 1px solid #ddd;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  /* וודא שהכפתור בגובה המתאים ושאינו נחתך */
+  display: flex; /* כדי למרכז את האייקון */
+  align-items: center; /* למרכז אנכית */
+  justify-content: center; /* למרכז אופקית */
+  min-width: 3rem; /* רוחב מינימלי לכפתור כדי שהחץ יראה */
+}
+
+/* *** תוספת חשובה לתיקון החץ ב-AutoComplete *** */
+.form-card-container .p-autocomplete .p-autocomplete-dropdown .pi {
+  color: #555 !important; /* וודא שהצבע גלוי */
+  font-size: 1rem; /* גודל סטנדרטי לחץ */
+  line-height: 1; /* לוודא שלא תהיה בעיה עם גובה השורה */
+}
+
+/* רשימת ההצעות של AutoComplete */
+.form-card-container .p-autocomplete-panel {
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  z-index: 1000; /* ודא שהוא מופיע מעל אלמנטים אחרים */
+}
+
+.form-card-container .p-autocomplete-panel .p-autocomplete-items .p-autocomplete-item {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.form-card-container .p-autocomplete-panel .p-autocomplete-items .p-autocomplete-item:hover {
+  background-color: #f0f8ff;
+}
+
+.form-card-container .p-autocomplete-panel .p-autocomplete-items .p-highlight {
+  background-color: #e0e8f2;
+  color: #333;
+}
+/* --- הוסף את הקוד הזה לקובץ ה-global.css הקיים שלך --- */
+
+/* --- קומפוננטת Supported.jsx (קטגוריות נתמכים) --- */
+.supported-categories-container {
+  max-width: 1200px; /* רוחב מקסימלי לכל אזור הקטגוריות */
+  margin: 40px auto; /* מרכוז אופקי עם מרווחים */
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.categories-title {
+  text-align: center;
+  color: #007bff; /* צבע כחול נעים */
+  margin-bottom: 30px;
+  font-size: 2.2em;
+  font-weight: 700;
+}
+
+.category-card {
+  width: 280px; /* רוחב קבוע לכל כרטיס קטגוריה */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+  border-radius: 10px;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  background-color: #fff;
+  border: 1px solid #eee;
+}
+
+.category-card:hover {
+  transform: translateY(-5px); /* אפקט קל במעבר עכבר */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.category-card .p-card-body {
+  padding: 1.5rem; /* ריפוד פנימי לכרטיס */
+}
+
+.category-card .p-card-title {
+  margin-bottom: 1rem;
+  padding: 0 1.5rem; /* ריפוד לכותרת בתוך הכרטיס */
+}
+
+.category-card .p-button {
+  font-size: 0.95em;
+  padding: 10px 18px;
+  border-radius: 5px;
+}
+
+/* סגנונות ספציפיים לכרטיס הוספת קטגוריה חדשה */
+.category-card.add-new-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 2px dashed #a0d8ff; /* גבול מקווקו */
+  background-color: #f0f8ff; /* רקע בהיר */
+  color: #007bff;
+  cursor: pointer;
+}
+
+.category-card.add-new-card .p-card-content {
+  flex-grow: 1; /* יגרום לכפתור להיות במרכז */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.category-card.add-new-card h3 {
+  color: #007bff;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.category-card.add-new-card .p-button.p-button-rounded {
+  width: 3.5rem;
+  height: 3.5rem;
+  font-size: 1.5em;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* --- קומפוננטת ViewSupported.jsx (טבלת נתמכים בתוך קטגוריה) --- */
+
+/* מעטפת ה-overlay אם הקומפוננטה מוצגת כ-Dialog/Modal */
+.view-supported-overlay {
+  position: fixed; /* או absolute אם ההורה יחסי */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5); /* רקע כהה שקוף */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* ודא שהוא מעל הכל */
+  backdrop-filter: blur(3px); /* אפקט טשטוש קל */
+}
+
+.view-supported-content-card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  padding: 30px;
+  max-width: 900px; /* רוחב מקסימלי לכרטיס התוכן */
+  width: 90%; /* יתפוס 90% מהרוחב של ה-overlay */
+  max-height: 90vh; /* גובה מקסימלי */
+  overflow-y: auto; /* גלילה אם התוכן ארוך מדי */
+  position: relative; /* עבור כפתור סגירה אם נרצה למקם מוחלט */
+}
+
+.view-supported-content-card h2 {
+  color: #007bff;
+  font-size: 2em;
+  margin-bottom: 20px;
+  text-align: left; /* יישור לשמאל */
+}
+
+/* כפתור סגירה של ה-ViewSupported (ה-X הגדול) */
+.view-supported-content-card .p-button-danger {
+  margin-left: 1rem;
+}
+
+/* סגנונות ל-DataTable בתוך ViewSupported */
+.view-supported-content-card .p-datatable {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 20px;
+}
+
+.view-supported-content-card .p-datatable-header {
+  background-color: #f8f8f8;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #e0e0e0;
+  font-weight: 600;
+  color: #444;
+}
+
+.view-supported-content-card .p-datatable-thead > tr > th {
+  background-color: #eef2f6;
+  color: #333;
+  font-weight: 700;
+  padding: 1rem 1rem;
+  border-bottom: 1px solid #e0e0e0;
+  border-right: 1px solid #f0f0f0;
+}
+
+.view-supported-content-card .p-datatable-tbody > tr > td {
+  padding: 1rem 1rem;
+  border-bottom: 1px solid #f0f0f0;
+  border-right: 1px solid #f8f8f8;
+  color: #555;
+}
+
+.view-supported-content-card .p-datatable-tbody > tr:nth-child(even) {
+  background-color: #fdfdfd;
+}
+
+.view-supported-content-card .p-datatable-tbody > tr:hover {
+  background-color: #f5f5f5;
+}
+
+/* סגנונות לדיאלוגים ב-ViewSupported (Add/Edit Person) */
+/* (הקלאסים p-dialog, p-fluid, p-dialog-header, p-dialog-footer כבר מקבלים סגנונות מ-PrimeReact) */
+/* אם תרצה סגנונות ספציפיים לדיאלוגים אלו בלבד, תוכל להוסיף כאן סלקטורים ספציפיים יותר. */
+
+.view-supported-content-card .p-dialog .field {
+  margin-bottom: 1rem;
+}
+
+.view-supported-content-card .p-dialog .field label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.view-supported-content-card .p-dialog .p-inputtext {
+  width: 100%;
+}
+
+.view-supported-content-card .p-error {
+  color: #ef4444;
+  font-size: 0.85em;
+  margin-top: 5px;
+  display: block;
+}
+
+/* סגנונות לכפתורים בתוך ה-DataTable של ViewSupported */
+.view-supported-content-card .p-button-text {
+  padding: 0.5rem;
+  font-size: 0.9em;
+}
+/* --- Add the following CSS to your existing global.css file --- */
+
+/* --- Login Page Styling --- */
+
+/* Overall container for the login page */
+.login-page-container {
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  min-height: 100vh; /* Take full viewport height */
+  background: linear-gradient(135deg, #f0f2f5 0%, #e0e6ed 100%); /* Subtle gradient background */
+  padding: 20px;
+  box-sizing: border-box; /* Include padding in element's total width and height */
+}
+
+/* Central login card */
+.login-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15); /* More prominent shadow */
+  padding: 40px;
+  max-width: 450px; /* Max width for the login card */
+  width: 100%; /* Ensure it takes full width up to max-width */
+  text-align: center;
+  overflow: hidden; /* Important for border-radius on children */
+}
+
+.login-title {
+  color: #1e88e5; /* Consistent with other primary blue */
+  font-size: 2.5em;
+  margin-bottom: 30px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+/* Styling for input fields with floating labels */
+.login-card .field {
+  margin-bottom: 30px; /* More space between fields */
+}
+
+.login-card .p-inputtext {
+  width: 100%;
+  padding: 14px 15px; /* Slightly more padding for inputs */
+  border-radius: 8px; /* More rounded inputs */
+  border: 1px solid #ddd;
+  font-size: 1.05em;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.login-card .p-inputtext:focus {
+  border-color: #1e88e5;
+  box-shadow: 0 0 0 0.2rem rgba(30, 136, 229, 0.25);
+}
+
+/* Floating label specific adjustments for better alignment */
+.login-card .p-float-label label {
+  top: 50%;
+  left: 15px;
+  transform: translateY(-50%);
+  color: #777;
+  transition: all 0.2s ease-out;
   pointer-events: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.login-card .p-float-label.p-focus label,
+.login-card .p-float-label.p-filled label {
+  top: -12px; /* Move label above the input */
+  left: 10px;
+  font-size: 0.85em; /* Smaller font when floating */
+  color: #1e88e5; /* Primary color when focused/filled */
+  background-color: #ffffff; /* Background to prevent text overlap */
+  padding: 0 5px; /* Padding for readability */
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* Styling for the login button */
+.login-card .p-button {
+  font-size: 1.2em;
+  padding: 14px 25px;
+  border-radius: 8px; /* Consistent rounded corners */
+  margin-top: 20px;
+  width: 100%; /* Full width button */
+  background-color: #1e88e5 !important; /* Ensure primary color */
+  border-color: #1e88e5 !important;
+  transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+.login-card .p-button:hover {
+  background-color: #1565c0 !important;
+  border-color: #1565c0 !important;
+  box-shadow: 0 4px 12px rgba(30, 136, 229, 0.3);
+}
+
+/* Styling for the link buttons (Forgot Password, Register) */
+.login-card .p-button-link {
+  font-size: 0.95em;
+  color: #007bff; /* Standard link color */
+  padding: 5px 10px;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.login-card .p-button-link:hover {
+  color: #0056b3; /* Darker on hover */
+  text-decoration: underline;
+}
+
+/* Flexbox for centering link buttons */
+.login-card .flex.justify-content-center.gap-3 {
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  gap: 15px; /* Space between links */
+}
+/* --- Add the following CSS to your existing global.css file --- */
+
+/* --- About Page Styling --- */
+
+.about-page-wrapper {
+  background-color: #f8f9fa; /* Light background for the whole page */
+  padding: 30px 0; /* Vertical padding */
 }
 
-.App-link {
-  color: #61dafb;
+.about-panel {
+  max-width: 1200px; /* Max width for the content panel */
+  margin: 0 auto; /* Center the panel */
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08); /* Soft shadow */
+  overflow: hidden; /* Ensure rounded corners apply */
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.about-content-container {
+  padding: 40px; /* Internal padding for the content */
+}
+
+.about-title {
+  color: #28a745; /* Green color, consistent with Keren Y&Y */
+  font-size: 3.5em;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 50px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.05); /* Subtle text shadow */
+}
+
+.about-section {
+  margin-bottom: 60px; /* Space between sections */
+}
+
+.about-section p {
+  font-size: 1.1em;
+  line-height: 1.8;
+  color: #555;
+  margin-bottom: 1em;
+}
+
+.section-title {
+  color: #1e88e5; /* Primary blue for section titles */
+  font-size: 2.5em;
+  font-weight: 700;
+  margin-bottom: 25px;
+  text-align: center; /* Default center, can be overridden by flex */
+}
+
+/* For image sections */
+.image-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.about-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px; /* Rounded corners for images */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Specific styling for text sections within flex layout */
+.text-section {
+  padding: 15px; /* Add some padding around text when next to images */
+}
+
+/* Feature boxes for "What We Do" section */
+.feature-box {
+  background-color: #f0f8ff; /* Light blue background */
+  border: 1px solid #e0e8f2;
+  border-radius: 10px;
+  padding: 25px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  flex: 1; /* Allow boxes to grow */
+  min-width: 280px; /* Minimum width for responsiveness */
+  max-width: 350px; /* Max width for consistency */
+}
+
+.feature-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.feature-icon {
+  font-size: 3.5em;
+  color: #28a745; /* Green icon color */
+  margin-bottom: 15px;
+}
+
+.feature-box h4 {
+  font-size: 1.4em;
+  color: #333;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.feature-box p {
+  font-size: 1em;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* Buttons in Get Involved section */
+.about-section .p-button {
+  font-size: 1.1em;
+  padding: 12px 25px;
+  border-radius: 6px;
+  margin: 10px; /* Space between buttons */
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+  .about-content-container {
+      padding: 20px;
   }
-  to {
-    transform: rotate(360deg);
+  .about-title {
+      font-size: 2.5em;
+  }
+  .section-title {
+      font-size: 2em;
+  }
+  .about-section.flex {
+      flex-direction: column !important; /* Stack columns on small screens */
+  }
+  .about-section .md:col-6 {
+      width: 100%;
+  }
+  .feature-box {
+      min-width: unset; /* Remove min-width on small screens */
+      width: 100%; /* Take full width */
   }
 }

@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { DataTable } from 'primereact/datatable'
-import { Column } from 'primereact/column'
-import { Button } from 'primereact/button'
-import { Dialog } from 'primereact/dialog'
-import { InputText } from 'primereact/inputtext'
-import { Toast } from 'primereact/toast'
-import axios from 'axios'
+import React, { useState, useEffect, useRef } from 'react';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import { Button } from 'primereact/button';
+import { Dialog } from 'primereact/dialog';
+import { InputText } from 'primereact/inputtext';
+import { Toast } from 'primereact/toast';
+import axios from 'axios';
 
-const phoneRegex = /^0\d{9}$/
+const phoneRegex = /^0\d{9}$/;
 
 const ViewSupported = ({ category, onClose }) => {
     const [supported, setSupported] = useState([]);
@@ -34,6 +34,7 @@ const ViewSupported = ({ category, onClose }) => {
 
     useEffect(() => {
         fetchSupported();
+        // eslint-disable-next-line
     }, [category]);
 
     useEffect(() => {
@@ -61,7 +62,6 @@ const ViewSupported = ({ category, onClose }) => {
         return Object.keys(errors).length === 0;
     };
 
-
     const showSuccessToast = (msg) => {
         toast.current.show({ severity: 'success', summary: 'Success', detail: msg, life: 3000 });
     };
@@ -69,10 +69,6 @@ const ViewSupported = ({ category, onClose }) => {
     const showErrorToast = (msg) => {
         toast.current.show({ severity: 'error', summary: 'Error', detail: msg, life: 4000 });
     };
-
-
-
-
 
     const handleAddOrEdit = async () => {
         if (!validateForm()) return;
@@ -105,8 +101,6 @@ const ViewSupported = ({ category, onClose }) => {
         }
     };
 
-
-
     const handleDelete = async (id) => {
         try {
             await axios.delete(`http://localhost:1135/api/supported/${id}`);
@@ -123,8 +117,7 @@ const ViewSupported = ({ category, onClose }) => {
         setNewRow({
             name: rowData.name,
             contactName: rowData.contactName,
-            contactPhone: rowData.contactPhone,
-            category: categories.find(c => c._id === rowData.category?._id) || null
+            contactPhone: rowData.contactPhone
         });
         setShowDialog(true);
     };
@@ -153,56 +146,53 @@ const ViewSupported = ({ category, onClose }) => {
             icon="pi pi-check"
             className="p-button-success"
             onClick={handleAddOrEdit}
-   
         />
     );
+
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
             handleAddOrEdit();
         }
-    }
+    };
 
     return (
-        <div style={{
-            position: 'fixed',
-            top: 0, left: 0, width: '100vw', height: '100vh',
-            background: 'rgba(0,0,0,0.3)', zIndex: 1000,
-            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'
-        }}>
+        <div className="view-supported-overlay">
             <Toast ref={toast} />
-            <div style={{ background: 'white', borderRadius: 8, padding: 24, minWidth: 500, position: 'relative' }}>
-                <Button
+            <div className="view-supported-content-card">
+                <div className="flex justify-content-between align-items-center mb-3">
+                    <h2>Supported for: {category.name}</h2>
+                    <div>
+                        <Button
+                            label="Add Supported"
+                            icon="pi pi-plus"
+                            className="p-button-primary mr-2"
+                            onClick={() => {
+                                setDialogMode('add');
+                                setNewRow({ name: '', contactName: '', contactPhone: '' });
+                                setFormErrors({});
+                                setShowDialog(true);
+                            }}
+                        />
+                        <Button
+                            icon="pi pi-times"
+                            className="p-button-danger"
+                            onClick={onClose}
+                        />
+                    </div>
+                </div>
 
-                    icon="pi pi-times"
-                    className="p-button-danger"
-                    style={{ position: 'absolute', top: 16, left: 16 }}
-                    onClick={onClose}
-                />
-                <h2 style={{ textAlign: 'center', marginBottom: 20 }}>
-                    <span style={{ color: '#1976d2' }}>{category.name}</span>
-                </h2>
-                <Button
-                    label="Add Supported"
-                    icon="pi pi-plus"
-                    className="p-button-success mb-3"
-                    onClick={() => {
-                        setDialogMode('add')
-                        setEditId(null);
-                        setNewRow({ name: '', contactName: '', contactPhone: '', category: null });
-                        setShowDialog(true)
-                    }}
-                />
                 <Dialog
-                    header={dialogMode === 'add' ? "Add Supported" : "Edit Supported"}
                     visible={showDialog}
-                    style={{ width: '30vw' }}
+                    style={{ width: '450px' }}
+                    header={dialogMode === 'add' ? 'Add New Supported Person' : 'Edit Supported Person'}
+                    modal
+                    className="p-fluid"
+                    footer={dialogFooter}
                     onHide={() => {
                         setShowDialog(false);
+                        setNewRow({ name: '', contactName: '', contactPhone: '' });
                         setFormErrors({});
-                        setDialogMode('add');
-                        setEditId(null);
                     }}
-                    footer={dialogFooter}
                 >
                     <div className="field mb-2">
                         <label>Name:</label>
@@ -246,4 +236,4 @@ const ViewSupported = ({ category, onClose }) => {
     );
 };
 
-export default ViewSupported
+export default ViewSupported;

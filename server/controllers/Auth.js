@@ -5,53 +5,31 @@ const crypto = require('crypto')
 const Donor = require("../models/Donor")
 const nodemailer = require('nodemailer')
 
-const sendEmail = async (to, subject, html) => {
-    const transporter = nodemailer.createTransport({
-        service: 'outlook',
-        auth: {
-            user: process.env.OUTLOOK_USER, // כתובת המייל שלך
-            pass: process.env.OUTLOOK_PASS // סיסמה/סיסמת אפליקציה
-        }
-    })
-    const mailOptions = {
-        from: process.env.OUTLOOK_USER,
-        to,
-        subject,
-        html
-    }
-    await transporter.sendMail(mailOptions);
-}
-
-// הרשמה
 const register = async (req, res) => {
   try {
     const { name, username, password, email, phone } = req.body
-
     if (!username || !password || !email) {
       return res.status(400).json({ error: 'Username, password and email are required.' })
     }
-    // בדוק אם המשתמש כבר קיים
     const existingDonor = await Donor.findOne({ email })
     if (existingDonor) {
       return res.status(400).json({ error: 'Email already exists.' })
     }
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds)
-    const newDonor = new Donor({
+    const newDonor = await Donor.create({
       name,
       username,
       password: hashedPassword,
       email,
       phone,
-    });
-    await newDonor.save();
-    res.status(201).json({ message: 'User registered successfully' });
+    })
+    res.status(201).json({ message: 'User registered successfully' })
   } catch (error) {
-    res.status(500).json({ error: 'Server error during registration.' });
+    res.status(500).json({ error: 'Server error during registration.' })
   }
-};
+}
 
-// התחברות
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -59,13 +37,11 @@ const login = async (req, res) => {
     if (!donor) {
       return res.status(400).json({ error: 'Invalid email or password' });
     }
-    const isMatch = await bcrypt.compare(password, donor.password);
+    const isMatch = await bcrypt.compare(password, donor.password)
     if (!isMatch) {
       return res.status(400).json({ error: 'Invalid email or password' });
     }
-    // צור טוקן עם תוקף ל-24 שעות
     const token = jwt.sign({ id: donor._id, role: donor.role }, process.env.JWT_SECRET, { expiresIn: '24h' });
-    // החזר רק את הנתונים שצריך (לא את הסיסמה!)
     const userData = {
       _id: donor._id,
       name: donor.name,
@@ -73,13 +49,28 @@ const login = async (req, res) => {
       email: donor.email,
       phone: donor.phone,
       role: donor.role
-    };
-
-    res.status(200).send({ token, user: userData, role: donor.role });
+    }
+    res.status(200).send({ token, user: userData, role: donor.role })
   } catch (error) {
-    res.status(500).json({ error: 'Error logging in' });
+    res.status(500).json({ error: 'Error logging in' })
   }
-};
+}
+const sendEmail = async (to, subject, html) => {
+  const transporter = nodemailer.createTransport({
+      service: 'outlook',
+      auth: {
+          user: process.env.OUTLOOK_USER, 
+          pass: process.env.OUTLOOK_PASS 
+      }
+  })
+  const mailOptions = {
+      from: process.env.OUTLOOK_USER,
+      to,
+      subject,
+      html
+  }
+  await transporter.sendMail(mailOptions);
+}
 
 const verificationCodes = {};
 

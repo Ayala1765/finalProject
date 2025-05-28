@@ -102,7 +102,7 @@ const AdminAddDonation = () => {
     };
 
     return (
-        <div className="p-fluid">
+        <div className="form-card-container">
             <Toast ref={toast} />
             <h2>Enter donation details</h2>
             <form onSubmit={handleSubmit}>
@@ -122,7 +122,6 @@ const AdminAddDonation = () => {
                                 setDonors(filteredDonors);
                             }
                         }}
-                        onDropdownClick={() => setDonors(allDonors)}
                         field="label"
                         onChange={(e) => {
                             if (e.value && typeof e.value === 'string') {
@@ -131,7 +130,7 @@ const AdminAddDonation = () => {
                                 setFormData({ ...formData, donorId: e.value?.value || '' });
                             }
                         }}
-                        dropdown
+
                         placeholder="Select a donor"
                     />
                 </div>

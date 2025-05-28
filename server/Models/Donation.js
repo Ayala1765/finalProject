@@ -17,7 +17,6 @@ const DonationSchema = new mongoose.Schema({
     type: String,
     enum: ['yd','tv','both','']
   },
-
   donorId: {
   type: mongoose.Schema.Types.ObjectId,
   ref: 'Donor',
@@ -34,4 +33,4 @@ const DonationSchema = new mongoose.Schema({
   default: ""
 }
 })
-module.exports = mongoose.model('Donation', DonationSchema);
+module.exports = mongoose.model('Donation', DonationSchema)

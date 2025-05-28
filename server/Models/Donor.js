@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-
 const DonorSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -30,6 +29,6 @@ const DonorSchema = new mongoose.Schema({
     trim: true
   }
 })
-module.exports = mongoose.model('Donor', DonorSchema);
+module.exports = mongoose.model('Donor', DonorSchema)
 
 

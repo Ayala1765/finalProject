@@ -1,26 +1,24 @@
-const mongoose = require('mongoose');
-
+const mongoose = require('mongoose')
 const SupportedSchema = new mongoose.Schema({
-  name: { // שם הנתמך
+  name: { 
     type: String,
     required: true,
     trim: true
   },
-  contactName: { // שם איש קשר
+  contactName: { 
     type: String,
     trim: true
   },
-  contactPhone: { // טלפון איש קשר
+  contactPhone: { 
     type: String,
     required: true,
     trim: true,
-    match: /^[0-9]{10}$/ // וידוא מספר טלפון תקין
+    match: /^[0-9]{10}$/
   },
-  category: { // קטגוריה מתוך מודל קטגוריות
+  category: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',
     required: true
   }
-});
-
-module.exports = mongoose.model('Supported', SupportedSchema);
+})
+module.exports = mongoose.model('Supported', SupportedSchema)

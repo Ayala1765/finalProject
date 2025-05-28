@@ -1,22 +1,26 @@
-import React from "react";
-import { Routes, Route,Navigate  } from "react-router-dom";
-import Login from "./Components/Login";
-import HomeDonor from "./Components/HomeDonor";
+import React from "react"
+import { Routes, Route,Navigate  } from "react-router-dom"
+import Login from "./Components/Login"
+import HomeDonor from "./Components/HomeDonor"
+import About from "./Components/About"
+import AddDonation from "./Components/AddDonation"
+import {useSelector } from 'react-redux'
+import NavigateDonor from "./Components/NavigateDonor"
+import NavigateAdmin from "./Components/NavigateAdmin"
+import PaymentPage from "./Components/PaymentPage"
+import GetAllDonors from "./Components/GetAllDonors"
+import RecentDonations from "./Components/RecentDonations"
+import GetAllDonations from "./Components/GetAllDonations"
+import AddDonor from "./Components/AddDonor"
+import AdminAddDonation from "./Components/AdminAddDonation"
+import TermsAndConditions from './Components/TermsAndConditions'
+import Supported from './Components/Supported'
+import ViewSupported from './Components/ViewSupported'
+import 'primereact/resources/themes/saga-blue/theme.css';
+import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
-import About from "./Components/About";
-import AddDonation from "./Components/AddDonation";
-import {useSelector } from 'react-redux';
-import NavigateDonor from "./Components/NavigateDonor";
-import NavigateAdmin from "./Components/NavigateAdmin";
-import PaymentPage from "./Components/PaymentPage";
-import GetAllDonors from "./Components/GetAllDonors";
-import RecentDonations from "./Components/RecentDonations";
-import GetAllDonations from "./Components/GetAllDonations";
-import AddDonor from "./Components/AddDonor";
-import AdminAddDonation from "./Components/AdminAddDonation";
-import TermsAndConditions from './Components/TermsAndConditions';
-import Supported from './Components/Supported';
-import ViewSupported from './Components/ViewSupported';
+import 'primeflex/primeflex.css';
+import './App.css'
 
 function App() {
     const { token, role } = useSelector((state) => state.token);

@@ -1,19 +1,19 @@
 const mongoose = require('mongoose')
 const creditSchema = new mongoose.Schema({
-  cardHolderName: { // שם בעל הכרטיס
+  cardHolderName: {
     type: String,
     required: true,
     trim: true
   },
-  cardNumber: { // מספר כרטיס אשראי (יש להצפין!)
+  cardNumber: { 
     type: String,
     required: true
   },
-  expirationDate: { // תאריך תפוגה (MM/YY)
+  expirationDate: {
     type: String,
     required: true
   },
-  cvv: { // קוד CVV (יש להצפין!)
+  cvv: {
     type: String,
     required: true
   }

@@ -124,8 +124,8 @@ const GetAllDonations = () => {
                     showIcon={false}
                 />
             </div>
-        );
-    };
+        )
+    }
 
     const eventFilterTemplate = (options) => (
         <Dropdown
@@ -133,10 +133,10 @@ const GetAllDonations = () => {
             options={events}
             onChange={(e) => options.filterApplyCallback(e.value)}
             placeholder="Select Event"
-            className="p-column-filter"
+            className="p-column-filter" // PrimeReact class
             showClear
         />
-    );
+    )
 
     if (loading) {
         return <p>Loading...</p>;
@@ -147,7 +147,8 @@ const GetAllDonations = () => {
     }
 
     return (<>
-        <div className="card">
+        {/* הוסף את הקלאס donations-table-container לדיב "card" */}
+        <div className="card donations-table-container">
             <DataTable
                 value={donations}
                 paginator

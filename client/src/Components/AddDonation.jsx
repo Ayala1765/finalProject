@@ -72,7 +72,7 @@ const AddDonation = () => {
     }
 
     return (
-        <div className="p-fluid">
+        <div className="form-card-container">
             <Toast ref={toast} />
             <h2>Enter donation details</h2>
             <form onSubmit={handleSubmit}>
