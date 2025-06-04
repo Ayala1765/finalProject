@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 const TermsAndConditions = () => {
     return (
@@ -17,4 +17,4 @@ const TermsAndConditions = () => {
     )
 }
 
-export default TermsAndConditions;
+export default TermsAndConditions

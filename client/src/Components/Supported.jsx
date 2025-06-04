@@ -1,17 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { Card } from 'primereact/card';
-import { Button } from 'primereact/button';
-import { Dialog } from 'primereact/dialog';
-import { InputText } from 'primereact/inputtext';
-import axios from 'axios';
-import ViewSupported from './ViewSupported';
+import React, { useState, useEffect } from 'react'
+import { Card } from 'primereact/card'
+import { Button } from 'primereact/button'
+import { Dialog } from 'primereact/dialog'
+import { InputText } from 'primereact/inputtext'
+import axios from 'axios'
+import ViewSupported from './ViewSupported'
 
 const Supported = () => {
-    const [supported, setSupported] = useState([]);
-    const [showDialog, setShowDialog] = useState(false);
-    const [dialogMode, setDialogMode] = useState('add');
-    const [categoryName, setCategoryName] = useState('');
-    const [category, setCategory] = useState('')
+    const [supported, setSupported] = useState([])
+    const [showDialog, setShowDialog] = useState(false)
+    const [dialogMode, setDialogMode] = useState('add')
+    const [categoryName, setCategoryName] = useState('')
     const [editId, setEditId] = useState(null)
     const [error, setError] = useState('')
     const [selectedCategory, setSelectedCategory] = useState(null)
@@ -21,46 +20,46 @@ const Supported = () => {
 
     const getAllCategories = async () => {
         try {
-            const res = await axios.get('http://localhost:1135/api/category');
-            setSupported(res.data);
+            const res = await axios.get('http://localhost:1135/api/category')
+            setSupported(res.data)
         } catch (err) {
-            setError('שגיאה בטעינת הקטגוריות!');
+            setError('שגיאה בטעינת הקטגוריות!')
         }
-    };
+    }
 
     const handleAddOrEdit = async () => {
-        setError('');
+        setError('')
         try {
             if (!categoryName.trim()) {
-                setError('שם הקטגוריה לא יכול להיות ריק!');
-                return;
+                setError('שם הקטגוריה לא יכול להיות ריק!')
+                return
             }
             if (dialogMode === 'add') {
-                await axios.post('http://localhost:1135/api/category', { name: categoryName });
+                await axios.post('http://localhost:1135/api/category', { name: categoryName })
             } else {
-                await axios.put(`http://localhost:1135/api/category/${editId}`, { name: categoryName });
+                await axios.put(`http://localhost:1135/api/category/${editId}`, { name: categoryName })
             }
-            getAllCategories();
-            setShowDialog(false);
-            setCategoryName('');
+            getAllCategories()
+            setShowDialog(false)
+            setCategoryName('')
         } catch (err) {
-            setError('שגיאה בשמירת הקטגוריה!');
-            console.error(err);
+            setError('שגיאה בשמירת הקטגוריה!')
+            console.error(err)
         }
-    };
+    }
 
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`http://localhost:1135/api/category/${id}`);
-            getAllCategories();
+            await axios.delete(`http://localhost:1135/api/category/${id}`)
+            getAllCategories()
         } catch (err) {
-            setError('שגיאה במחיקת הקטגוריה!');
+            setError('שגיאה במחיקת הקטגוריה!')
         }
-    };
+    }
 
     useEffect(() => {
-        getAllCategories();
-    }, []);
+        getAllCategories()
+    }, [])
 
     const header = (name, id) => (
         <div className="flex justify-content-between align-items-center">
@@ -70,33 +69,33 @@ const Supported = () => {
                     icon="pi pi-pencil"
                     className="p-button-rounded p-button-success p-button-text mr-2"
                     onClick={() => {
-                        setDialogMode('edit');
-                        setCategoryName(name);
-                        setEditId(id);
-                        setShowDialog(true);
+                        setDialogMode('edit')
+                        setCategoryName(name)
+                        setEditId(id)
+                        setShowDialog(true)
                     }}
                 />
                 <Button
                     icon="pi pi-trash"
                     className="p-button-rounded p-button-danger p-button-text"
                     onClick={() => {
-                        setDeleteId(id);
-                        setShowDeleteDialog(true);
+                        setDeleteId(id)
+                        setShowDeleteDialog(true)
                     }}
                 />
             </div>
         </div>
-    );
+    )
 
     return (
         <>
-            <div className="supported-categories-container"> {/* <--- הוסף את הדיב הזה */}
-                <div className="flex flex-wrap justify-content-center gap-4"> {/* PrimeFlex classes */}
+            <div className="supported-categories-container"> 
+                <div className="flex flex-wrap justify-content-center gap-4"> 
                     {supported.map(category => (
                         <Card
                             key={category._id}
                             title={header(category.name, category._id)}
-                            className="category-card" // <--- הוסף קלאס עבור עיצוב הכרטיס
+                            className="category-card"
                         >
                             <div className="flex justify-content-center">
                                 <Button
@@ -104,8 +103,8 @@ const Supported = () => {
                                     icon="pi pi-users"
                                     className="p-button-info"
                                     onClick={() => {
-                                        setSelectedCategory(category);
-                                        setShowViewSupported(true);
+                                        setSelectedCategory(category)
+                                        setShowViewSupported(true)
                                     }}
                                 />
                             </div>
@@ -117,23 +116,21 @@ const Supported = () => {
                                 <h3>Add New Category</h3>
                             </div>
                         }
-                        className="category-card add-new-card" // <--- קלאסים נוספים
+                        className="category-card add-new-card"
                     >
                         <div className="flex justify-content-center">
                             <Button
                                 icon="pi pi-plus"
                                 className="p-button-rounded p-button-success"
                                 onClick={() => {
-                                    setDialogMode('add');
-                                    setCategoryName('');
-                                    setShowDialog(true);
+                                    setDialogMode('add')
+                                    setCategoryName('')
+                                    setShowDialog(true)
                                 }}
                             />
                         </div>
                     </Card>
                 </div>
-
-                {/* Dialog for Add/Edit Category */}
                 <Dialog
                     visible={showDialog}
                     style={{ width: '450px' }}
@@ -157,8 +154,8 @@ const Supported = () => {
                         </>
                     }
                     onHide={() => {
-                        setShowDialog(false);
-                        setError(''); // Clear error on hide
+                        setShowDialog(false)
+                        setError('')
                     }}
                 >
                     <div className="field">
@@ -173,8 +170,6 @@ const Supported = () => {
                         {error && <small className="p-error">{error}</small>}
                     </div>
                 </Dialog>
-
-                {/* Dialog for Delete Confirmation */}
                 <Dialog
                     visible={showDeleteDialog}
                     style={{ width: '350px' }}
@@ -193,8 +188,8 @@ const Supported = () => {
                                 icon="pi pi-check"
                                 className="p-button-danger"
                                 onClick={async () => {
-                                    await handleDelete(deleteId);
-                                    setShowDeleteDialog(false);
+                                    await handleDelete(deleteId)
+                                    setShowDeleteDialog(false)
                                 }}
                             />
                         </>
@@ -205,9 +200,8 @@ const Supported = () => {
                         Are you sure you want to delete this category?
                     </div>
                 </Dialog>
-            </div> {/* <--- סגירת הדיב שהוספת */}
+            </div> 
 
-            {/* ViewSupported Dialog (if applicable) */}
             {showViewSupported && (
                 <ViewSupported
                     category={selectedCategory}
@@ -215,7 +209,7 @@ const Supported = () => {
                 />
             )}
         </>
-    );
-};
+    )
+}
 
-export default Supported;
+export default Supported

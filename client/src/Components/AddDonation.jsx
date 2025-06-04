@@ -1,25 +1,25 @@
-import React, { useRef, useState } from 'react';
-import { InputText } from 'primereact/inputtext';
-import { Dropdown } from 'primereact/dropdown';
-import { InputTextarea } from 'primereact/inputtextarea';
-import { Button } from 'primereact/button';
-import { Toast } from 'primereact/toast';
-import { RadioButton } from "primereact/radiobutton";
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import 'primereact/resources/themes/saga-blue/theme.css';
-import 'primereact/resources/primereact.min.css';
-import 'primeicons/primeicons.css';
+import React, { useRef, useState } from 'react'
+import { InputText } from 'primereact/inputtext'
+import { Dropdown } from 'primereact/dropdown'
+import { InputTextarea } from 'primereact/inputtextarea'
+import { Button } from 'primereact/button'
+import { Toast } from 'primereact/toast'
+import { RadioButton } from "primereact/radiobutton"
+import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import 'primereact/resources/themes/saga-blue/theme.css'
+import 'primereact/resources/primereact.min.css'
+import 'primeicons/primeicons.css'
 import 'primeflex/primeflex.css'
 import { coinOptions, eventOptions } from '../options'
 
 const AddDonation = () => {
-    const { user } = useSelector((state) => state.token);
-    const [whichDay, setWhichDay] = useState(false);
-    const [isPurim, setIsPurim] = useState(false);
-    const toast = useRef(null);
+    const { user } = useSelector((state) => state.token)
+    const [whichDay, setWhichDay] = useState(false)
+    const [isPurim, setIsPurim] = useState(false)
+    const toast = useRef(null)
 
-    const navigate = useNavigate();
+    const navigate = useNavigate()
     const [formData, setFormData] = useState({
         donationAmount: '',
         coinType: '',
@@ -28,47 +28,42 @@ const AddDonation = () => {
         donorId: '',
         event: '',
     })
-
- 
-
-    // שינוי שדה בטופס
     const handleChange = (e, fieldName) => {
-        setFormData({ ...formData, [fieldName]: e.target.value });
+        setFormData({ ...formData, [fieldName]: e.target.value })
         if (fieldName === "event" && e.target.value === "Purim") {
-            setIsPurim(true);
+            setIsPurim(true)
         } else if (fieldName === "event") {
-            setIsPurim(false);
-            setWhichDay(false);
+            setIsPurim(false)
+            setWhichDay(false)
         }
-    };
+    }
 
-    // ולידציה בסיסית
     const validateForm = () => {
         if (!formData.donationAmount || isNaN(formData.donationAmount) || Number(formData.donationAmount) <= 0) {
-            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Please enter a valid donation amount.', life: 3000 });
-            return false;
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Please enter a valid donation amount.', life: 3000 })
+            return false
         }
         if (!formData.coinType) {
-            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Please select a currency type.', life: 3000 });
-            return false;
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Please select a currency type.', life: 3000 })
+            return false
         }
         if (!formData.event) {
-            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Please select an event.', life: 3000 });
-            return false;
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Please select an event.', life: 3000 })
+            return false
         }
         if (isPurim && !whichDay) {
-            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Please select a Purim day.', life: 3000 });
-            return false;
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Please select a Purim day.', life: 3000 })
+            return false
         }
-        return true;
-    };
+        return true
+    }
 
     const handleSubmit = async (e) => {
-        if (e) e.preventDefault();
-        if (!validateForm()) return;
+        if (e) e.preventDefault()
+        if (!validateForm()) return
 
-        const updatedFormData = { ...formData, donorId: user._id, Day: whichDay };
-        navigate('/paymentPage', { state: { updatedForm: updatedFormData } });
+        const updatedFormData = { ...formData, donorId: user._id, Day: whichDay }
+        navigate('/paymentPage', { state: { updatedForm: updatedFormData } })
     }
 
     return (
@@ -144,7 +139,7 @@ const AddDonation = () => {
                 />
             </form>
         </div>
-    );
+    )
 }
 
-export default AddDonation;
+export default AddDonation

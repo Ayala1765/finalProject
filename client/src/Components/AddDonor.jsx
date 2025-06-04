@@ -1,61 +1,51 @@
-//useEffect
-import React, { useRef, useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { InputText } from 'primereact/inputtext';
-import { Button } from 'primereact/button';
-import { Password } from 'primereact/password';
-import { Divider } from 'primereact/divider';
-import { classNames } from 'primereact/utils';
-import axios from 'axios';
-import { Toast } from 'primereact/toast';
+
+import React, { useRef, useState } from 'react'
+import { useForm, Controller } from 'react-hook-form'
+import { InputText } from 'primereact/inputtext'
+import { Button } from 'primereact/button'
+import { Password } from 'primereact/password'
+import { Divider } from 'primereact/divider'
+import { classNames } from 'primereact/utils'
+import axios from 'axios'
+import { Toast } from 'primereact/toast'
 import { useNavigate } from 'react-router-dom'
-import './FormDemo.css';
-import GetAllDonors from './GetAllDonors';
-import { Checkbox } from "primereact/checkbox";
-
-
+import './FormDemo.css'
+import { Checkbox } from "primereact/checkbox"
 const AddDonor = () => {
     const navigate = useNavigate()
-    const [checked, setChecked] = useState(false);
-
+    const [checked, setChecked] = useState(false)
     const toast = useRef(null)
-
-    // const [message, setMessage] = useState()
-    const [formData, setFormData] = useState({});
+    const [formData, setFormData] = useState({})
     const defaultValues = {}
-    const { control, formState: { errors }, handleSubmit, reset } = useForm({ defaultValues });
+    const { control, formState: { errors }, handleSubmit, reset } = useForm({ defaultValues })
     const onSubmit = async (data) => {
-
         const finalData = {...data}
-
         if (checked) {
-            finalData.name = finalData.name + " seminary";
-
+            finalData.name = finalData.name + " seminary"
         }
-        setFormData(finalData);
+        setFormData(finalData)
         try {
             const res = await axios.post('http://localhost:1135/api/auth/register', finalData)
-            console.log(res.data.message);
+            console.log(res.data.message)
             reset()
             showGood(res.data.message)
             navigate('/GetAllDonors')
         }
         catch (e) {
-            console.log(e.response.data.error);
+            console.log(e.response.data.error)
             showError(e.response.data.error)
 
 
         }
-    };
-
+    }
     const showError = (message) => {
-        toast.current.show({ severity: 'error', summary: 'Error', detail: message, life: 3000 });
+        toast.current.show({ severity: 'error', summary: 'Error', detail: message, life: 3000 })
 
-    };
+    }
     const showGood = (message) => {
-        toast.current.show({ severity: 'success', summary: 'Success', detail: message, life: 3000 });
-    };
-    const passwordHeader = <h6>Pick a password</h6>;
+        toast.current.show({ severity: 'success', summary: 'Success', detail: message, life: 3000 })
+    }
+    const passwordHeader = <h6>Pick a password</h6>
     const passwordFooter = (
         <React.Fragment>
             <Divider />
@@ -67,8 +57,7 @@ const AddDonor = () => {
                 <li>Minimum 8 characters</li>
             </ul>
         </React.Fragment>
-    );
-
+    )
     return (
         <div className="form-demo">
             <Toast ref={toast} />
@@ -123,7 +112,7 @@ const AddDonor = () => {
                                     rules={{
                                         required: 'Phone number is required.',
                                         pattern: {
-                                            value: /^[0-9]{10}$/, // דוגמה למספר טלפון עם 10 ספרות
+                                            value: /^[0-9]{10}$/,
                                             message: 'Please enter a valid phone number.'
                                         }
                                     }}
@@ -149,7 +138,7 @@ const AddDonor = () => {
                 </div>
             </div>
         </div>
-    );
+    )
 }
 
 

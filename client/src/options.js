@@ -5,7 +5,7 @@ const coinOptions = [
     { label: 'C$', value: 'C$' },
     { label: 'A$', value: 'A$' },
     { label: '£', value: '£' }
-];
+]
 
  const eventOptions = [
     { label: 'Pesach', value: 'Pesach' },

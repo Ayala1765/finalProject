@@ -1,73 +1,64 @@
-import React, { useState } from "react";
-import { Dialog } from 'primereact/dialog';
-import { InputText } from 'primereact/inputtext';
-import { Password } from 'primereact/password';
-import { Button } from 'primereact/button';
-import axios from "axios";
+import React, { useState } from "react"
+import { Dialog } from 'primereact/dialog'
+import { InputText } from 'primereact/inputtext'
+import { Password } from 'primereact/password'
+import { Button } from 'primereact/button'
+import axios from "axios"
 
 const ForgotPasswordDialog = () => {
-    const [visible, setVisible] = useState(false);
-    const [step, setStep] = useState(1);
-    const [email, setEmail] = useState("");
-    const [verificationCode, setVerificationCode] = useState("");
-    const [newPassword, setNewPassword] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState("");
+    const [visible, setVisible] = useState(false)
+    const [step, setStep] = useState(1)
+    const [email, setEmail] = useState("")
+    const [verificationCode, setVerificationCode] = useState("")
+    const [newPassword, setNewPassword] = useState("")
+    const [loading, setLoading] = useState(false)
+    const [message, setMessage] = useState("")
 
-    // פותח דיאלוג
     const openDialog = (e) => {
-        e.preventDefault();
-        setVisible(true);
-    };
-
-    // סגירת דיאלוג ואיפוס
+        e.preventDefault()
+        setVisible(true)
+    }
     const handleClose = () => {
-        setVisible(false);
-        setStep(1);
-        setEmail("");
-        setVerificationCode("");
-        setNewPassword("");
-        setMessage("");
-        setLoading(false);
-    };
-
-    // שליחת קוד לאימייל
+        setVisible(false)
+        setStep(1)
+        setEmail("")
+        setVerificationCode("")
+        setNewPassword("")
+        setMessage("")
+        setLoading(false)
+    }
     const handleSendCode = async () => {
         
-        setLoading(true);
-        setMessage("");
+        setLoading(true)
+        setMessage("")
         try {
             const res = await axios.post("http://localhost:1135/api/auth/sendVerificationCode", { email })
-            console.log(res);
-            setMessage(res.data.message);
-            setStep(2);
+            console.log(res)
+            setMessage(res.data.message)
+            setStep(2)
         } catch (e) {
-            setMessage(e.response?.data?.message || "Error sending code");
+            setMessage(e.response?.data?.message || "Error sending code")
         }
-        setLoading(false);
-    };
-
-    // שליחת קוד וסיסמה חדשה
+        setLoading(false)
+    }
     const handleResetPassword = async () => {
-        setLoading(true);
-        setMessage("");
+        setLoading(true)
+        setMessage("")
         try {
             const res = await axios.post("http://localhost:1135/api/auth/resetPasswordWithCode", {
                 email,
                 verificationCode,
                 newPassword,
-            });
-            setMessage(res.data.message);
-            setStep(3);
+            })
+            setMessage(res.data.message)
+            setStep(3)
         } catch (e) {
-            setMessage(e.response?.data?.message || "Error resetting password");
+            setMessage(e.response?.data?.message || "Error resetting password")
         }
-        setLoading(false);
-    };
-
+        setLoading(false)
+    }
     return (
         <>
-            {/* תגית a שמפעילה את הדיאלוג */}
             <a href="#" onClick={openDialog} style={{
                 color: 'green',
                 textDecoration: 'underline',
@@ -134,7 +125,7 @@ const ForgotPasswordDialog = () => {
                 )}
             </Dialog>
         </>
-    );
-};
+    )
+}
 
-export default ForgotPasswordDialog;
+export default ForgotPasswordDialog

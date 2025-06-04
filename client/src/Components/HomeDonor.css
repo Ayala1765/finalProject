@@ -1,21 +1,63 @@
-.home-donor-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    background-color: #f0f8ff; /* צבע רקע */
-    font-family: Arial, sans-serif;
-    text-align: center;
-  }
-  
-  .home-donor-title {
-    font-size: 2rem;
-    color: #4caf50; /* ירוק */
-    margin-bottom: 20px;
-  }
-  
-  .home-donor-text {
-    font-size: 1.2rem;
-    color: #333; /* אפור כהה */
-  }
+.hd3-main {
+  display: flex; min-height: 100vh;
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  background: #fff;
+}
+.hd3-textside {
+  flex: 1 1 50%; min-width: 330px;
+  background: #fff;
+  display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+  padding: 0 8vw;
+}
+.hd3-textside h1 {
+  font-size: 2.3rem; color: #191919; margin-bottom: 0.1em; font-weight: 700;
+}
+.hd3-brand {
+  font-size: 2.1rem;
+  color: #e53935;
+  font-weight: 800;
+  margin-bottom: 20px;
+  letter-spacing: 2px;
+}
+.hd3-sub {
+  color: #494949;
+  font-size: 1.15em;
+  margin-bottom: 36px;
+}
+.hd3-actions { display: flex; gap: 16px; }
+.hd3-btn {
+  padding: 11px 29px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: #fff;
+  color: #191919;
+  border: 2px solid #191919;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+}
+.hd3-btn.main {
+  background: #e53935;
+  color: #fff;
+  border: 2px solid #e53935;
+}
+.hd3-btn.main:hover {
+  background: #b71c1c;
+  border-color: #b71c1c;
+}
+.hd3-btn:hover {
+  background: #191919;
+  color: #fff;
+  border-color: #191919;
+}
+.hd3-bgside {
+  flex: 1 1 50%; min-height: 100vh;
+  background: url('heart.png') center/cover no-repeat;
+  display: block;
+}
+@media (max-width: 900px) {
+  .hd3-main { flex-direction: column; }
+  .hd3-bgside { min-height: 220px; }
+  .hd3-textside { padding: 0 18px; align-items: center; text-align: center;}
+}

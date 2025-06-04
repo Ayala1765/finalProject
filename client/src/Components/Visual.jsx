@@ -1,28 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { Chart } from 'primereact/chart';
-import axios from 'axios';
-import { useSelector } from 'react-redux';
+import React, { useState, useEffect } from 'react'
+import { Chart } from 'primereact/chart'
+import axios from 'axios'
+import { useSelector } from 'react-redux'
 
 const Visual = () => {
-    const [byDonor, setByDonor] = useState({});
-    const [byCoinType, setByCoinType] = useState({});
-    const [byEvent, setByEvent] = useState({});
-    const { token } = useSelector((state) => state.token);
-    const [chartData, setChartData] = useState({});
-    const [chartOptions, setChartOptions] = useState({});
-    const [dataArry, setDataArry] = useState([]);
+    const [byDonor, setByDonor] = useState({})
+    const [byCoinType, setByCoinType] = useState({})
+    const [byEvent, setByEvent] = useState({})
+    const { token } = useSelector((state) => state.token)
+    const [chartData, setChartData] = useState({})
+    const [chartOptions, setChartOptions] = useState({})
+    const [dataArry, setDataArry] = useState([])
 
-    // שליפת נתונים מהשרת
     useEffect(() => {
         const fetchData = async () => {
-            const documentStyle = getComputedStyle(document.documentElement);
+            const documentStyle = getComputedStyle(document.documentElement)
             try {
                 const response = await axios.get('http://localhost:1135/api/donation', {
                     headers: { Authorization: `Bearer ${token}` }
-                });
+                })
 
-                const sumCoin = sumByField(response.data, 'coinType');
-                const sumEvent = sumByField(response.data, 'event');
+                const sumCoin = sumByField(response.data, 'coinType')
+                const sumEvent = sumByField(response.data, 'event')
 
                 setByDonor({
                     labels: ['seminary', 'private'],
@@ -33,7 +32,7 @@ const Visual = () => {
                             documentStyle.getPropertyValue('--yellow-500')
                         ]
                     }]
-                });
+                })
 
                 setByCoinType({
                     labels: Object.keys(sumCoin),
@@ -57,7 +56,7 @@ const Visual = () => {
                             documentStyle.getPropertyValue('--gray-500')
                         ]
                     }]
-                });
+                })
 
                 setByEvent({
                     labels: Object.keys(sumEvent),
@@ -81,23 +80,23 @@ const Visual = () => {
                             documentStyle.getPropertyValue('--gray-500')
                         ]
                     }]
-                });
+                })
 
-                setDataArry(response.data);
+                setDataArry(response.data)
 
             } catch (err) {
-                console.log(err);
+                console.log(err)
             }
-        };
-        if (token) fetchData();
-    }, [token]);
+        }
+        if (token) fetchData()
+    }, [token])
 
-    // בניית נתוני גרף עמודות לאחר שליפת הנתונים
+
     useEffect(() => {
-        const documentStyle = getComputedStyle(document.documentElement);
-        const textColor = documentStyle.getPropertyValue('--text-color');
-        const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
-        const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
+        const documentStyle = getComputedStyle(document.documentElement)
+        const textColor = documentStyle.getPropertyValue('--text-color')
+        const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary')
+        const surfaceBorder = documentStyle.getPropertyValue('--surface-border')
 
         const data = {
             labels: [
@@ -111,13 +110,13 @@ const Visual = () => {
                     data: getData(dataArry)
                 }
             ]
-        };
+        }
         const options = {
             maintainAspectRatio: false,
             aspectRatio: 0.8,
             plugins: {
                 legend: {
-                    display: false // זה יעלים את המלבן התכלת עם undefined!
+                    display: false
                 }
             },
             scales: {
@@ -143,46 +142,45 @@ const Visual = () => {
                     }
                 }
             }
-        };
+        }
 
-        setChartData(data);
-        setChartOptions(options);
-    }, [dataArry]);
+        setChartData(data)
+        setChartOptions(options)
+    }, [dataArry])
 
-    // פונקציות עזר
     const sumByField = (data, field) => {
-        const result = {};
+        const result = {}
         data.forEach(item => {
-            const key = item[field];
-            if (!result[key]) result[key] = 0;
-            result[key] += Number(item.donationAmount) || 0;
-        });
-        return result;
-    };
+            const key = item[field]
+            if (!result[key]) result[key] = 0
+            result[key] += Number(item.donationAmount) || 0
+        })
+        return result
+    }
 
     const ress = (data) => {
-        const seminarySum = [0, 0];
+        const seminarySum = [0, 0]
         data.forEach(item => {
             if (item.donorId && item.donorId.name && (item.donorId.name).includes("seminary")) {
-                seminarySum[0] += Number(item.donationAmount) || 0;
+                seminarySum[0] += Number(item.donationAmount) || 0
             } else {
-                seminarySum[1] += Number(item.donationAmount) || 0;
+                seminarySum[1] += Number(item.donationAmount) || 0
             }
-        });
-        return seminarySum;
-    };
+        })
+        return seminarySum
+    }
 
     const getData = (data) => {
-        const monthlyData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        const monthlyData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         data.forEach(item => {
             if (item.donationDate) {
-                const date = new Date(item.donationDate);
-                const month = date.getMonth();
-                monthlyData[month] += Number(item.donationAmount) || 0;
+                const date = new Date(item.donationDate)
+                const month = date.getMonth()
+                monthlyData[month] += Number(item.donationAmount) || 0
             }
-        });
-        return monthlyData;
-    };
+        })
+        return monthlyData
+    }
 
     return (
         <>
@@ -193,7 +191,7 @@ const Visual = () => {
             </div>
             <Chart type="bar" data={chartData} options={chartOptions} />
         </>
-    );
-};
+    )
+}
 
-export default Visual;
+export default Visual

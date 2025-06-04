@@ -1,23 +1,20 @@
-//useEffect
-import React, { useRef, useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { InputText } from 'primereact/inputtext';
-import { Button } from 'primereact/button';
-import { Password } from 'primereact/password';
-import { Checkbox } from 'primereact/checkbox';
-import { Dialog } from 'primereact/dialog';
-import { Divider } from 'primereact/divider';
-import { classNames } from 'primereact/utils';
-import axios from 'axios';
-import { Toast } from 'primereact/toast';
+import React, { useRef, useState } from 'react'
+import { useForm, Controller } from 'react-hook-form'
+import { InputText } from 'primereact/inputtext'
+import { Button } from 'primereact/button'
+import { Password } from 'primereact/password'
+import { Checkbox } from 'primereact/checkbox'
+import { Dialog } from 'primereact/dialog'
+import { Divider } from 'primereact/divider'
+import { classNames } from 'primereact/utils'
+import axios from 'axios'
+import { Toast } from 'primereact/toast'
 import './FormDemo.css'
-import { Route, Routes } from 'react-router-dom';
-import TermsAndConditions from './TermsAndConditions'
 
 const Register = () => {
-    const [visible, setVisible] = useState(false);
+    const [visible, setVisible] = useState(false)
     const toast = useRef(null)
-    const [formData, setFormData] = useState({});
+    const [formData, setFormData] = useState({})
     const defaultValues = {}
     const { control, formState: { errors }, handleSubmit, reset } = useForm({ defaultValues })
     const onSubmit = async (data) => {
@@ -25,7 +22,7 @@ const Register = () => {
         try {
             const res = await axios.post('http://localhost:1135/api/auth/register', data)
             console.log(res.data.message)
-            setVisible(false);
+            setVisible(false)
             reset()
             showGood(res.data.message)
         }
@@ -40,7 +37,7 @@ const Register = () => {
     const showGood = (message) => {
         toast.current.show({ severity: 'success', summary: 'Success', detail: message, life: 3000 })
     }
-    const passwordHeader = <h6>Pick a password</h6>;
+    const passwordHeader = <h6>Pick a password</h6>
     const passwordFooter = (
         <React.Fragment>
             <Divider />
@@ -52,7 +49,7 @@ const Register = () => {
                 <li>Minimum 8 characters</li>
             </ul>
         </React.Fragment>
-    );
+    )
 
     return (
         <div className="form-demo">
@@ -64,7 +61,7 @@ const Register = () => {
             }} onClick={() => { setVisible(true) }}>
                 Donating for the first time?
             </a>
-            <Dialog visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }}>
+            <Dialog visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return setVisible(false) }}>
                 <div className="flex justify-content-center">
                     <div className="card">
                         <form onSubmit={handleSubmit(onSubmit)} className="p-fluid">
@@ -111,7 +108,7 @@ const Register = () => {
                                         rules={{
                                             required: 'Phone number is required.',
                                             pattern: {
-                                                value: /^[0-9]{10}$/, // דוגמה למספר טלפון עם 10 ספרות
+                                                value: /^[0-9]{10}$/,
                                                 message: 'Please enter a valid phone number.'
                                             }
                                         }}
@@ -155,7 +152,7 @@ const Register = () => {
                 </div>
             </Dialog>
         </div>
-    );
+    )
 }
 
 

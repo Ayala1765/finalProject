@@ -1,9 +1,9 @@
-import React from 'react';
-import { Menubar } from 'primereact/menubar';
-import { Button } from 'primereact/button';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { logOut } from '../redux/tokenSlice';
+import React from 'react'
+import { Menubar } from 'primereact/menubar'
+import { Button } from 'primereact/button'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { logOut } from '../redux/tokenSlice'
 
 const NavigateAdmin = () => {
     const navigate = useNavigate()
@@ -15,27 +15,21 @@ const NavigateAdmin = () => {
             command: () => {
                 navigate('/homedonor')
             }
-
         },
-
         {
             label: 'Donors',
             icon: 'pi pi-users',
             command: () => {
                 navigate('/getAllDonors')
             }
-        }
-        ,
-
+        } ,
         {
             label: 'Donation',
             icon: 'pi pi-wallet',
             command: () => {
                 navigate('/getAllDonations')
             }
-        }
-        ,
-
+        },
         {
             label: 'Add donor',
             icon: 'pi pi-user-plus',
@@ -57,8 +51,6 @@ const NavigateAdmin = () => {
                 navigate('/supported')
             }
         }
-       
-
     ]
     const end = (
         <div className="flex align-items-center gap-2">
@@ -76,7 +68,7 @@ const NavigateAdmin = () => {
                 
                 }}
                 onClick={() => {
-                    dispatch(logOut());
+                    dispatch(logOut())
                     navigate('/')
                 }}
                 aria-label="Logout"

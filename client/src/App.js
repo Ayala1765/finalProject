@@ -16,14 +16,14 @@ import AdminAddDonation from "./Components/AdminAddDonation"
 import TermsAndConditions from './Components/TermsAndConditions'
 import Supported from './Components/Supported'
 import ViewSupported from './Components/ViewSupported'
-import 'primereact/resources/themes/saga-blue/theme.css';
-import 'primereact/resources/primereact.min.css';
-import 'primeicons/primeicons.css';
-import 'primeflex/primeflex.css';
+import 'primereact/resources/themes/saga-blue/theme.css'
+import 'primereact/resources/primereact.min.css'
+import 'primeicons/primeicons.css'
+import 'primeflex/primeflex.css'
 import './App.css'
 
 function App() {
-    const { token, role } = useSelector((state) => state.token);
+    const { token, role } = useSelector((state) => state.token)
 
     return (
         <>
@@ -46,7 +46,7 @@ function App() {
 
             </Routes>
         </>
-    );
+    )
 }
 
-export default App;
+export default App

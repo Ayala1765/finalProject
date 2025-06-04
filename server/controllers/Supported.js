@@ -1,78 +1,73 @@
-const Supported = require('../Models/supported');
+const Supported = require('../Models/supported')
 
-// שליפת כל הנתמכים
+
 const getSupported = async (req, res) => {
   try {
-    const supported = await Supported.find().populate('category', 'name').lean();
-    res.status(200).json(supported);
+    const supported = await Supported.find().populate('category', 'name').lean()
+    res.status(200).json(supported)
   } catch (error) {
-    console.error("Error fetching supported:", error.message);
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Error fetching supported:", error.message)
+    res.status(500).json({ message: "Internal server error" })
   }
-};
+}
 
-// הוספת נתמך חדש
+
 const addSupported = async (req, res) => {
   try {
-    const { name, contactName, contactPhone, category } = req.body;
+    const { name, contactName, contactPhone, category } = req.body
 
     if (!name ||  !contactPhone || !category) {
-      return res.status(400).json({ message: "All fields are required." });
+      return res.status(400).json({ message: "All fields are required." })
     }
 
-    const supported = new Supported({ name, contactName, contactPhone, category });
-    await supported.save();
+    const supported = new Supported({ name, contactName, contactPhone, category })
+    await supported.save()
 
-    res.status(201).json({ message: "Supported added successfully.", supported });
+    res.status(201).json({ message: "Supported added successfully.", supported })
   } catch (error) {
-    console.error("Error adding supported:", error.message);
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Error adding supported:", error.message)
+    res.status(500).json({ message: "Internal server error" })
   }
-};
+}
 
-// עריכת נתמך קיים
 const updateSupported = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { name, contactName, contactPhone, category } = req.body;
+    const { id } = req.params
+    const { name, contactName, contactPhone, category } = req.body
 
     if (!name ||  !contactPhone || !category) {
-      return res.status(400).json({ message: "All fields are required." });
+      return res.status(400).json({ message: "All fields are required." })
     }
 
     const supported = await Supported.findByIdAndUpdate(
       id,
       { name, contactName, contactPhone, category },
       { new: true }
-    );
+    )
 
     if (!supported) {
-      return res.status(404).json({ message: "Supported not found." });
+      return res.status(404).json({ message: "Supported not found." })
     }
 
-    res.status(200).json({ message: "Supported updated successfully.", supported });
+    res.status(200).json({ message: "Supported updated successfully.", supported })
   } catch (error) {
-    console.error("Error updating supported:", error.message);
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Error updating supported:", error.message)
+    res.status(500).json({ message: "Internal server error" })
   }
-};
+}
 
-// מחיקת נתמך
 const deleteSupported = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params
 
-    const supported = await Supported.findByIdAndDelete(id);
-
+    const supported = await Supported.findByIdAndDelete(id)
     if (!supported) {
-      return res.status(404).json({ message: "Supported not found." });
+      return res.status(404).json({ message: "Supported not found." })
     }
-
-    res.status(200).json({ message: "Supported deleted successfully." });
+    res.status(200).json({ message: "Supported deleted successfully." })
   } catch (error) {
-    console.error("Error deleting supported:", error.message);
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Error deleting supported:", error.message)
+    res.status(500).json({ message: "Internal server error" })
   }
-};
-
-module.exports = { getSupported, addSupported, updateSupported, deleteSupported };
+}
+module.exports = { getSupported, addSupported, updateSupported, deleteSupported }

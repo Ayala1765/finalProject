@@ -1,126 +1,125 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { Button } from 'primereact/button';
-import { Dialog } from 'primereact/dialog';
-import { InputText } from 'primereact/inputtext';
-import { Toast } from 'primereact/toast';
-import axios from 'axios';
+import React, { useState, useEffect, useRef } from 'react'
+import { DataTable } from 'primereact/datatable'
+import { Column } from 'primereact/column'
+import { Button } from 'primereact/button'
+import { Dialog } from 'primereact/dialog'
+import { InputText } from 'primereact/inputtext'
+import { Toast } from 'primereact/toast'
+import axios from 'axios'
 
-const phoneRegex = /^0\d{9}$/;
+const phoneRegex = /^0\d{9}$/
 
 const ViewSupported = ({ category, onClose }) => {
-    const [supported, setSupported] = useState([]);
-    const [categories, setCategories] = useState([]);
-    const [showDialog, setShowDialog] = useState(false);
-    const [dialogMode, setDialogMode] = useState('add');
-    const [editId, setEditId] = useState(null);
+    const [supported, setSupported] = useState([])
+    const [categories, setCategories] = useState([])
+    const [showDialog, setShowDialog] = useState(false)
+    const [dialogMode, setDialogMode] = useState('add')
+    const [editId, setEditId] = useState(null)
     const [newRow, setNewRow] = useState({
         name: '',
         contactName: '',
         contactPhone: '',
-    });
-    const [formErrors, setFormErrors] = useState({});
-    const toast = useRef(null);
+    })
+    const [formErrors, setFormErrors] = useState({})
+    const toast = useRef(null)
 
     const fetchSupported = async () => {
         try {
-            const res = await axios.get('http://localhost:1135/api/supported');
-            setSupported(res.data.filter(sup => sup.category?.name === category.name));
+            const res = await axios.get('http://localhost:1135/api/supported')
+            setSupported(res.data.filter(sup => sup.category?.name === category.name))
         } catch (err) {
-            showErrorToast('Failed to load supported people');
+            showErrorToast('Failed to load supported people')
         }
-    };
+    }
 
     useEffect(() => {
-        fetchSupported();
-        // eslint-disable-next-line
-    }, [category]);
+        fetchSupported()
+    }, [category])
 
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const res = await axios.get('http://localhost:1135/api/category');
-                setCategories(res.data);
+                const res = await axios.get('http://localhost:1135/api/category')
+                setCategories(res.data)
             } catch (err) {
-                showErrorToast('Failed to load categories');
+                showErrorToast('Failed to load categories')
             }
-        };
-        fetchCategories();
-    }, []);
+        }
+        fetchCategories()
+    }, [])
 
     const validateForm = () => {
-        let errors = {};
-        if (!newRow.name.trim()) errors.name = 'Please enter a name';
-        if (!newRow.contactName.trim()) errors.contactName = 'Please enter a contact name';
+        let errors = {}
+        if (!newRow.name.trim()) errors.name = 'Please enter a name'
+        if (!newRow.contactName.trim()) errors.contactName = 'Please enter a contact name'
         if (!newRow.contactPhone.trim()) {
-            errors.contactPhone = 'Please enter a phone number';
+            errors.contactPhone = 'Please enter a phone number'
         } else if (!phoneRegex.test(newRow.contactPhone.trim())) {
-            errors.contactPhone = 'Invalid phone number';
+            errors.contactPhone = 'Invalid phone number'
         }
-        setFormErrors(errors);
-        return Object.keys(errors).length === 0;
-    };
+        setFormErrors(errors)
+        return Object.keys(errors).length === 0
+    }
 
     const showSuccessToast = (msg) => {
-        toast.current.show({ severity: 'success', summary: 'Success', detail: msg, life: 3000 });
-    };
+        toast.current.show({ severity: 'success', summary: 'Success', detail: msg, life: 3000 })
+    }
 
     const showErrorToast = (msg) => {
-        toast.current.show({ severity: 'error', summary: 'Error', detail: msg, life: 4000 });
-    };
+        toast.current.show({ severity: 'error', summary: 'Error', detail: msg, life: 4000 })
+    }
 
     const handleAddOrEdit = async () => {
-        if (!validateForm()) return;
+        if (!validateForm()) return
         try {
             if (dialogMode === 'add') {
                 await axios.post('http://localhost:1135/api/supported', {
                     name: newRow.name,
                     contactName: newRow.contactName,
                     contactPhone: newRow.contactPhone,
-                    category: category._id // always use the page's category
-                });
-                showSuccessToast('Supported person added successfully!');
+                    category: category._id 
+                })
+                showSuccessToast('Supported person added successfully!')
             } else if (dialogMode === 'edit' && editId) {
                 await axios.put(`http://localhost:1135/api/supported/${editId}`, {
                     name: newRow.name,
                     contactName: newRow.contactName,
                     contactPhone: newRow.contactPhone,
                     category: category._id
-                });
-                showSuccessToast('Supported person updated!');
+                })
+                showSuccessToast('Supported person updated!')
             }
-            setShowDialog(false);
-            setNewRow({ name: '', contactName: '', contactPhone: '' });
-            setFormErrors({});
-            setEditId(null);
-            setDialogMode('add');
-            fetchSupported();
+            setShowDialog(false)
+            setNewRow({ name: '', contactName: '', contactPhone: '' })
+            setFormErrors({})
+            setEditId(null)
+            setDialogMode('add')
+            fetchSupported()
         } catch (err) {
-            showErrorToast('Failed to save supported person');
+            showErrorToast('Failed to save supported person')
         }
-    };
+    }
 
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`http://localhost:1135/api/supported/${id}`);
-            showSuccessToast('Supported person deleted!');
-            fetchSupported();
+            await axios.delete(`http://localhost:1135/api/supported/${id}`)
+            showSuccessToast('Supported person deleted!')
+            fetchSupported()
         } catch (err) {
-            showErrorToast('Failed to delete supported person');
+            showErrorToast('Failed to delete supported person')
         }
-    };
+    }
 
     const handleEdit = (rowData) => {
-        setDialogMode('edit');
-        setEditId(rowData._id);
+        setDialogMode('edit')
+        setEditId(rowData._id)
         setNewRow({
             name: rowData.name,
             contactName: rowData.contactName,
             contactPhone: rowData.contactPhone
-        });
-        setShowDialog(true);
-    };
+        })
+        setShowDialog(true)
+    }
 
     const actions = (rowData) => (
         <div>
@@ -138,7 +137,7 @@ const ViewSupported = ({ category, onClose }) => {
                 tooltip="Delete"
             />
         </div>
-    );
+    )
 
     const dialogFooter = (
         <Button
@@ -147,13 +146,13 @@ const ViewSupported = ({ category, onClose }) => {
             className="p-button-success"
             onClick={handleAddOrEdit}
         />
-    );
+    )
 
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
-            handleAddOrEdit();
+            handleAddOrEdit()
         }
-    };
+    }
 
     return (
         <div className="view-supported-overlay">
@@ -167,10 +166,10 @@ const ViewSupported = ({ category, onClose }) => {
                             icon="pi pi-plus"
                             className="p-button-primary mr-2"
                             onClick={() => {
-                                setDialogMode('add');
-                                setNewRow({ name: '', contactName: '', contactPhone: '' });
-                                setFormErrors({});
-                                setShowDialog(true);
+                                setDialogMode('add')
+                                setNewRow({ name: '', contactName: '', contactPhone: '' })
+                                setFormErrors({})
+                                setShowDialog(true)
                             }}
                         />
                         <Button
@@ -189,9 +188,9 @@ const ViewSupported = ({ category, onClose }) => {
                     className="p-fluid"
                     footer={dialogFooter}
                     onHide={() => {
-                        setShowDialog(false);
-                        setNewRow({ name: '', contactName: '', contactPhone: '' });
-                        setFormErrors({});
+                        setShowDialog(false)
+                        setNewRow({ name: '', contactName: '', contactPhone: '' })
+                        setFormErrors({})
                     }}
                 >
                     <div className="field mb-2">
@@ -233,7 +232,7 @@ const ViewSupported = ({ category, onClose }) => {
                 </div>
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default ViewSupported;
+export default ViewSupported

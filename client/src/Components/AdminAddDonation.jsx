@@ -1,29 +1,29 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { InputText } from 'primereact/inputtext';
-import { Dropdown } from 'primereact/dropdown';
-import { InputTextarea } from 'primereact/inputtextarea';
-import { Button } from 'primereact/button';
-import { Toast } from 'primereact/toast';
-import { RadioButton } from "primereact/radiobutton";
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import 'primereact/resources/themes/saga-blue/theme.css';
-import 'primereact/resources/primereact.min.css';
-import 'primeicons/primeicons.css';
-import 'primeflex/primeflex.css';
-import axios from "axios";
+import React, { useEffect, useRef, useState } from 'react'
+import { InputText } from 'primereact/inputtext'
+import { Dropdown } from 'primereact/dropdown'
+import { InputTextarea } from 'primereact/inputtextarea'
+import { Button } from 'primereact/button'
+import { Toast } from 'primereact/toast'
+import { RadioButton } from "primereact/radiobutton"
+import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import 'primereact/resources/themes/saga-blue/theme.css'
+import 'primereact/resources/primereact.min.css'
+import 'primeicons/primeicons.css'
+import 'primeflex/primeflex.css'
+import axios from "axios"
 import { AutoComplete } from 'primereact/autocomplete'
 import { coinOptions, eventOptions } from '../options'
 
 const AdminAddDonation = () => {
-    const { user } = useSelector((state) => state.token);
-    const [whichDay, setWhichDay] = useState(false);
-    const [isPurim, setIsPurim] = useState(false);
-    const toast = useRef(null);
-    const { token } = useSelector((state) => state.token);
-    const [allDonors, setAllDonors] = useState([]);
-    const [donors, setDonors] = useState([]);
-    const navigate = useNavigate();
+    const { user } = useSelector((state) => state.token)
+    const [whichDay, setWhichDay] = useState(false)
+    const [isPurim, setIsPurim] = useState(false)
+    const toast = useRef(null)
+    const { token } = useSelector((state) => state.token)
+    const [allDonors, setAllDonors] = useState([])
+    const [donors, setDonors] = useState([])
+    const navigate = useNavigate()
     const [formData, setFormData] = useState({
         donationAmount: '',
         coinType: '',
@@ -31,13 +31,13 @@ const AdminAddDonation = () => {
         notes: '',
         donorId: '',
         event: '',
-    });
+    })
 
 
 
     useEffect(() => {
-        getDonors();
-    }, []);
+        getDonors()
+    }, [])
 
     const getDonors = async () => {
         try {
@@ -45,61 +45,61 @@ const AdminAddDonation = () => {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
-            });
+            })
             const formattedDonors = response.data.map(donor => ({
                 label: donor.name,
                 value: donor._id,
-            }));
+            }))
             setAllDonors(formattedDonors)
             setDonors(formattedDonors)
         } catch (err) {
-            console.error("Error fetching donors:", err);
+            console.error("Error fetching donors:", err)
         }
-    };
+    }
 
     const handleChange = (e, fieldName) => {
-        const value = e.target ? e.target.value : e.value;
-        setFormData({ ...formData, [fieldName]: value });
+        const value = e.target ? e.target.value : e.value
+        setFormData({ ...formData, [fieldName]: value })
 
         if (fieldName === "event") {
-            setIsPurim(value === "Purim");
+            setIsPurim(value === "Purim")
         }
-    };
+    }
 
     const validateForm = () => {
         if (!formData.donationAmount || isNaN(formData.donationAmount) || Number(formData.donationAmount) <= 0) {
-            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Please enter a valid donation amount.', life: 3000 });
-            return false;
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Please enter a valid donation amount.', life: 3000 })
+            return false
         }
         if (!formData.coinType) {
-            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Please select a currency type.', life: 3000 });
-            return false;
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Please select a currency type.', life: 3000 })
+            return false
         }
         if (!formData.event) {
-            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Please select an event.', life: 3000 });
-            return false;
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Please select an event.', life: 3000 })
+            return false
         }
         if (isPurim && !whichDay) {
-            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Please select a Purim day.', life: 3000 });
-            return false;
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Please select a Purim day.', life: 3000 })
+            return false
         }
-        return true;
-    };
+        return true
+    }
 
     const handleSubmit = async (e) => {
-        if (e) e.preventDefault();
-        if (!validateForm()) return;
+        if (e) e.preventDefault()
+        if (!validateForm()) return
 
-        const updatedForm = { ...formData };
+        const updatedForm = { ...formData }
 
         if (whichDay === "yd")
-            updatedForm.Day = "yd";
+            updatedForm.Day = "yd"
         if (whichDay === "tv")
-            updatedForm.Day = "yd";
+            updatedForm.Day = "yd"
         if (whichDay === "both")
-            updatedForm.Day = "both";
+            updatedForm.Day = "both"
         navigate('/PaymentPage', { state: { updatedForm } })
-    };
+    }
 
     return (
         <div className="form-card-container">
@@ -112,22 +112,22 @@ const AdminAddDonation = () => {
                         value={donors.find(donor => donor.value === formData.donorId)?.label || formData.donorId || ''}
                         suggestions={donors}
                         completeMethod={(e) => {
-                            const query = e.query.toLowerCase();
+                            const query = e.query.toLowerCase()
                             if (!query) {
-                                setDonors(allDonors);
+                                setDonors(allDonors)
                             } else {
                                 const filteredDonors = allDonors.filter(donor =>
                                     donor.label.toLowerCase().includes(query)
-                                );
-                                setDonors(filteredDonors);
+                                )
+                                setDonors(filteredDonors)
                             }
                         }}
                         field="label"
                         onChange={(e) => {
                             if (e.value && typeof e.value === 'string') {
-                                setFormData({ ...formData, donorId: e.value });
+                                setFormData({ ...formData, donorId: e.value })
                             } else {
-                                setFormData({ ...formData, donorId: e.value?.value || '' });
+                                setFormData({ ...formData, donorId: e.value?.value || '' })
                             }
                         }}
 
@@ -202,7 +202,7 @@ const AdminAddDonation = () => {
                 />
             </form>
         </div>
-    );
-};
+    )
+}
 
-export default AdminAddDonation;
+export default AdminAddDonation

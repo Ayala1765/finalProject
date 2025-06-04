@@ -18,9 +18,9 @@ const tokenSlice = createSlice({
             state.role = action.payload
         },
         logOut(state, action) {
-            state.token = null;
-            state.user = null;
-            state.role = null;
+            state.token = null
+            state.user = null
+            state.role = null
 
         }
     }

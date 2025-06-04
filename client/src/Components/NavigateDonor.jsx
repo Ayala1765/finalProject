@@ -1,20 +1,20 @@
-import React from 'react';
-import { Menubar } from 'primereact/menubar';
-import { Button } from 'primereact/button';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { logOut } from '../redux/tokenSlice';
+import React from 'react'
+import { Menubar } from 'primereact/menubar'
+import { Button } from 'primereact/button'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { logOut } from '../redux/tokenSlice'
 
 const NavigateDonor = () => {
     const navigate = useNavigate()
-    const dispatch = useDispatch();
+    const dispatch = useDispatch()
 
     const items = [
         {
             label: 'Home',
             icon: 'pi pi-home',
             command: () => {
-                navigate('/homeDonor');
+                navigate('/homeDonor')
             }
 
         },
@@ -22,26 +22,26 @@ const NavigateDonor = () => {
             label: 'About us',
             icon: 'pi pi-star',
             command: () => {
-                navigate('/about');
+                navigate('/about')
             }
         },
         {
             label: 'For donation',
             icon: 'pi pi-plus-circle',
             command: () => {
-                navigate('/addDonation');
+                navigate('/addDonation')
             }
         },
         {
             label: 'Recent donations',
             icon: 'pi pi-history',
             command: () => {
-                navigate('/RecentDonations');
+                navigate('/RecentDonations')
             }
         }
 
 
-    ];
+    ]
     const end = (
         <div className="flex align-items-center gap-2">
             <Button
@@ -58,7 +58,7 @@ const NavigateDonor = () => {
                 
                 }}
                 onClick={() => {
-                    dispatch(logOut());
+                    dispatch(logOut())
                     navigate('/')
                 }}
                 aria-label="Logout"

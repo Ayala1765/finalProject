@@ -15,7 +15,7 @@ const register = async (req, res) => {
     if (existingDonor) {
       return res.status(400).json({ error: 'Email already exists.' })
     }
-    const saltRounds = 10;
+    const saltRounds = 10
     const hashedPassword = await bcrypt.hash(password, saltRounds)
     const newDonor = await Donor.create({
       name,
@@ -24,7 +24,7 @@ const register = async (req, res) => {
       email,
       phone,
     })
-    res.status(201).json({ message: 'User registered successfully' })
+    res.json(newDonor)
   } catch (error) {
     res.status(500).json({ error: 'Server error during registration.' })
   }
@@ -32,16 +32,16 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    const donor = await Donor.findOne({ email });
+    const { email, password } = req.body
+    const donor = await Donor.findOne({ email })
     if (!donor) {
-      return res.status(400).json({ error: 'Invalid email or password' });
+      return res.status(400).json({ error: 'Invalid email or password' })
     }
     const isMatch = await bcrypt.compare(password, donor.password)
     if (!isMatch) {
-      return res.status(400).json({ error: 'Invalid email or password' });
+      return res.status(400).json({ error: 'Invalid email or password' })
     }
-    const token = jwt.sign({ id: donor._id, role: donor.role }, process.env.JWT_SECRET, { expiresIn: '24h' });
+    const token = jwt.sign({ id: donor._id, role: donor.role }, process.env.JWT_SECRET, { expiresIn: '24h' })
     const userData = {
       _id: donor._id,
       name: donor.name,
@@ -55,6 +55,7 @@ const login = async (req, res) => {
     res.status(500).json({ error: 'Error logging in' })
   }
 }
+
 const sendEmail = async (to, subject, html) => {
   const transporter = nodemailer.createTransport({
       service: 'outlook',
@@ -69,43 +70,39 @@ const sendEmail = async (to, subject, html) => {
       subject,
       html
   }
-  await transporter.sendMail(mailOptions);
+  await transporter.sendMail(mailOptions)
 }
 
-const verificationCodes = {};
+const verificationCodes = {}
 
-// שליחת קוד אימות לאיפוס סיסמה
 const sendVerificationCode = async (req, res) => {
-  const { email } = req.body;
+  const { email } = req.body
 
   if (!email) {
-    return res.status(400).json({ message: 'Email is required.' });
+    return res.status(400).json({ message: 'Email is required.' })
   }
-
   try {
     const user = await Donor.findOne({ email }).exec()
     if (!user) {
-      return res.status(404).json({ message: 'User not found.' });
+      return res.status(404).json({ message: 'User not found.' })
     }
-    const verificationCode = crypto.randomInt(100000, 999999);
+    const verificationCode = crypto.randomInt(100000, 999999)
     verificationCodes[email] = verificationCode
     const emailHtml = `
       <p>Your password reset verification code is: <strong>${verificationCode}</strong></p>
       <p>If you did not request this, please ignore this email.</p>
-    `;
-   await sendEmail(email, 'Password Reset Verification Code', emailHtml);
-    res.status(200).json({ message: 'Verification code sent to email.' });
+    `
+   await sendEmail(email, 'Password Reset Verification Code', emailHtml)
+    res.status(200).json({ message: 'Verification code sent to email.' })
   } catch (err) {
-    res.status(500).json({ message: 'Error sending verification code.', error: err.message });
+    res.status(500).json({ message: 'Error sending verification code.', error: err.message })
   }
-};
+}
 
-// איפוס סיסמה עם קוד
 const resetPasswordWithCode = async (req, res) => {
-  const { email, verificationCode, newPassword } = req.body;
-
+  const { email, verificationCode, newPassword } = req.body
   if (!email || !verificationCode || !newPassword) {
-    return res.status(400).json({ message: 'Email, verification code, and new password are required.' });
+    return res.status(400).json({ message: 'Email, verification code, and new password are required.' })
   }
   try {
     if (verificationCodes[email] !== parseInt(verificationCode)) {
@@ -116,12 +113,12 @@ const resetPasswordWithCode = async (req, res) => {
       return res.status(404).json({ message: 'User not found.' })
     }
     const hashedPassword = await bcrypt.hash(newPassword, 10)
-    user.password = hashedPassword;
-    await user.save();
-    delete verificationCodes[email];
-    res.status(200).json({ message: 'Password reset successfully.' });
+    user.password = hashedPassword
+    await user.save()
+    delete verificationCodes[email]
+    res.json(user)
   } catch (err) {
-    res.status(500).json({ message: 'Error resetting password.', error: err.message });
+    res.status(500).json({ message: 'Error resetting password.', error: err.message })
   }
 }
-module.exports = { register, login, resetPasswordWithCode, sendVerificationCode,sendEmail };
+module.exports = { register, login, resetPasswordWithCode, sendVerificationCode,sendEmail }

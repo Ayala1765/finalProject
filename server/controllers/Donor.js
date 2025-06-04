@@ -1,5 +1,5 @@
-require('dotenv').config();
-const Donation = require('../Models/Donation');
+require('dotenv').config()
+const Donation = require('../Models/Donation')
 const Donor =require("../models/Donor")
 const addDonor =
     async (req, res) => {
@@ -14,7 +14,7 @@ const addDonor =
             const donor = await Donor.create({ name: name, username: username, password: password, role: role, email: email, phone: phone })
             res.json(donor)
         } catch (error) {
-            res.status(500).json({ error: 'Error adding donor' });
+            res.status(500).json({ error: 'Error adding donor' })
         }
     }
 const getAllDonors =
@@ -25,16 +25,16 @@ const getAllDonors =
             if (!req.user || req.user.role !== 'manager') {  
                 return res.status(403).json({ error: 'Access denied' })
             }
-            const donors = await Donor.find().lean().sort({ name: 1 });
-            console.log(donors);
+            const donors = await Donor.find().lean().sort({ name: 1 })
+            console.log(donors)
     
             const allDonation = await Promise.all(
                 donors.map(async (item,index) => {
-                    const children = await Donation.find({ donorId: item._id });
-                    return { ...item, children,index:index };
+                    const children = await Donation.find({ donorId: item._id })
+                    return { ...item, children,index:index }
                 })
-            );
-            console.log(allDonation);
+            )
+            console.log(allDonation)
             if (!allDonation || allDonation.length === 0){
                 res.json([])
             }
@@ -42,8 +42,8 @@ const getAllDonors =
             res.json(allDonation)
         }
         catch (error) {
-            console.error("Error in getAllDonors:", error.message);
-            res.status(500).json({ message: "Internal server error" });
+            console.error("Error in getAllDonors:", error.message)
+            res.status(500).json({ message: "Internal server error" })
         }
     }
 
@@ -53,7 +53,7 @@ const deleteDonor =
             if (!req.user || req.user.role !== 'manager') {
                 return res.status(403).json({ error: 'Access denied' })
             }
-            const { _id } = req.body;
+            const { _id } = req.body
             if (!_id) {
                 res.status(400).json({ message: "Donor ID is required" })
             }

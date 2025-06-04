@@ -1,48 +1,40 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { InputText } from 'primereact/inputtext';
-import { Button } from 'primereact/button';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { setToken, setUser, setRole } from '../redux/tokenSlice';
-
-// ייבא את הקומפוננטות של שכחתי סיסמא והרשמה אם הן נטענות ישירות כאן
-import Register from './Register';       // <-- KEEP THIS IMPORT
-import ForgetPassword from './ForgetPassword'; // <-- KEEP THIS IMPORT
-
+import React, { useState } from 'react'
+import axios from 'axios'
+import { InputText } from 'primereact/inputtext'
+import { Button } from 'primereact/button'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { setToken, setUser, setRole } from '../redux/tokenSlice'
+import Register from './Register'
+import ForgetPassword from './ForgetPassword'
 const Login = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    // Remove showRegisterDialog and showForgetPasswordDialog states
-    // const [showRegisterDialog, setShowRegisterDialog] = useState(false);
-    // const [showForgetPasswordDialog, setShowForgetPasswordDialog] = useState(false);
-
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     const handleLogin = async () => {
         try {
             if (!email || !password) {
-                alert('Please fill in all fields.'); // Consider using Toast for better UX
-                return;
+                alert('Please fill in all fields.')
+                return
             }
-            const res = await axios.post('http://localhost:1135/api/auth/login', { email, password });
-            console.log("!!!!!!!!!!!!!!!!!!" + res.data.user);
-            dispatch(setUser(res.data.user));
-            dispatch(setRole(res.data.role));
-            dispatch(setToken(res.data.token));
-            navigate('/homeDonor');
+            const res = await axios.post('http://localhost:1135/api/auth/login', { email, password })
+            dispatch(setUser(res.data.user))
+            dispatch(setRole(res.data.role))
+            dispatch(setToken(res.data.token))
+            navigate('/homeDonor')
         } catch (error) {
-            console.log('Error logging in:', error);
-            alert('Login failed. Please check your credentials.'); // Consider using Toast for better UX
+            console.log('Error logging in:', error)
+            alert('Login failed. Please check your credentials.')
         }
-    };
+    }
 
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
-            handleLogin();
+            handleLogin()
         }
-    };
+    }
 
     return (
         <div className="login-page-container">
@@ -90,7 +82,7 @@ const Login = () => {
                 </div>
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default Login;
+export default Login

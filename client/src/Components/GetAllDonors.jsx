@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { TreeTable } from 'primereact/treetable';
-import { Column } from 'primereact/column';
-import { useSelector } from 'react-redux';
+import React, { useState, useEffect } from 'react'
+import { TreeTable } from 'primereact/treetable'
+import { Column } from 'primereact/column'
+import { useSelector } from 'react-redux'
 import axios from 'axios'
 
 
@@ -20,18 +20,16 @@ const GetAllDonors = () => {
         }
 
         const fetchDonors = async () => {
-            setLoading(true);
+            setLoading(true)
 
             try {
                 const response = await axios.get(`http://localhost:1135/api/donor`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
-                });
-
-                // Initialize donors with empty children
+                })
                 const treeData = response.data.map((donor) => ({
-                    key: donor._id, // Use donor ID as the key for uniqueness
+                    key: donor._id,
                     data: {
                         id: donor._id,
                         name: donor.name,
@@ -39,7 +37,7 @@ const GetAllDonors = () => {
                         phone: donor.phone
                     },
                     children: donor.children?.map((donation) => ({
-                        key: donation._id, // Use donation ID as the key for uniqueness
+                        key: donation._id,
                         data: {
                             id: donation._id,
                             name: `Donation`,
@@ -47,21 +45,20 @@ const GetAllDonors = () => {
                             phone: `donationDate: ${new Date(donation.donationDate).toLocaleDateString('en-GB')}`,
                             coinType: `coinType: ${donation.coinType}`
                         },
-                        children: [] // Ensure children is defined
-                    })) || [] // Fallback to an empty array if no children
-                }));
+                        children: []
+                    })) || []
+                }))
 
-                console.log("Donors data:", treeData); // Debugging
-                setDonors(treeData);
+                console.log("Donors data:", treeData)
+                setDonors(treeData)
             } catch (err) {
-                setError(err.response?.data?.message || err.message);
+                setError(err.response?.data?.message || err.message)
             } finally {
-                setLoading(false);
+                setLoading(false)
             }
-        };
-
-        fetchDonors();
-    }, [token]);
+        }
+        fetchDonors()
+    }, [token])
 
     const loadDonations = async (node) => {
         try {
@@ -69,9 +66,7 @@ const GetAllDonors = () => {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
-            });
-
-            // Map donations to TreeTable format
+            })
             const donations = response.data.map((donation, index) => ({
                 key: `${node.key}-${index}`,
                 data: {
@@ -81,37 +76,28 @@ const GetAllDonors = () => {
                     coinType: `coinType: ${donation.coinType}`
                 },
                 children: []
-            }));
-
-            // Update the donor's children with the donations
+            }))
             const updatedDonors = donors.map((donor) =>
                 donor.key === node.key ? { ...donor, children: donations } : donor
-            );
-
-            console.log("Updated donors:", updatedDonors); // Debugging
-            setDonors(updatedDonors);
+            )
+            console.log("Updated donors:", updatedDonors)
+            setDonors(updatedDonors)
         } catch (err) {
-            console.error("Failed to load donations:", err);
+            console.error("Failed to load donations:", err)
         }
-    };
-
+    }
     const handleExpand = (event) => {
-        const node = event.node;
-
-        // Load donations only if they haven't been loaded yet
+        const node = event.node
         if (node.children.length === 0) {
-            loadDonations(node);
+            loadDonations(node)
         }
-    };
-
+    }
     if (loading) {
-        return <p>Loading...</p>;
+        return <p>Loading...</p>
     }
-
     if (error) {
-        return <p>Error: {error}</p>;
+        return <p>Error: {error}</p>
     }
-
     return (<>
         <div className="card">
             <TreeTable value={donors} tableStyle={{ minWidth: '50rem' }} onExpand={handleExpand}>
@@ -120,9 +106,9 @@ const GetAllDonors = () => {
                 <Column field="phone" header="Phone"></Column>
             </TreeTable>
         </div>
-      
-    </>
-    );
-};
 
-export default GetAllDonors;
+    </>
+    )
+}
+
+export default GetAllDonors

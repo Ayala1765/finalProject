@@ -13,17 +13,17 @@ import Visual from './Visual'
 
 
 const GetAllDonations = () => {
-    const { token } = useSelector((state) => state.token);
-    const [donations, setDonations] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const { token } = useSelector((state) => state.token)
+    const [donations, setDonations] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: 'contains' },
         'donorId.name': { value: null, matchMode: 'startsWith' },
         event: { value: null, matchMode: 'equals' },
         donationDate: { value: null, matchMode: 'between' },
         donationAmount: { value: null, matchMode: 'custom' },
-    });
+    })
 
     const events = [
         { label: 'Pesach', value: 'Pesach' },
@@ -33,58 +33,58 @@ const GetAllDonations = () => {
         { label: 'Purim-י"ד', value: 'Purim-י"ד' },
         { label: 'Purim-ט"ו', value: 'Purim-ט"ו' },
         { label: 'General', value: 'General' },
-    ];
+    ]
 
     useEffect(() => {
         const fetchDonations = async () => {
             try {
                 const response = await axios.get('http://localhost:1135/api/donation', {
                     headers: { Authorization: `Bearer ${token}` },
-                });
+                })
                 const formatted = response.data.map((donation) => {
-                    let event = donation.event;
-                    const dayValue = (donation.Day || '').toString().toLowerCase().trim();
+                    let event = donation.event
+                    const dayValue = (donation.Day || '').toString().toLowerCase().trim()
 
                     if (donation.event?.toLowerCase() === 'purim') {
                         if (dayValue === 'yd') {
-                            event = 'Purim-י"ד';
+                            event = 'Purim-י"ד'
                         } else if (dayValue === 'tv') {
-                            event = 'Purim-ט"ו';
+                            event = 'Purim-ט"ו'
                         } else if (dayValue === 'both') {
-                            event = 'Purim-י"ד וט"ו';
+                            event = 'Purim-י"ד וט"ו'
                         } else {
-                            event = 'Purim-ט"ו';
+                            event = 'Purim-ט"ו'
                         }
                     }
                     return {
                         ...donation,
                         donationDate: new Date(donation.donationDate),
                         event,
-                    };
-                });
-                setDonations(formatted);
+                    }
+                })
+                setDonations(formatted)
             } catch (err) {
-                setError(err.message);
+                setError(err.message)
             } finally {
-                setLoading(false);
+                setLoading(false)
             }
-        };
+        }
 
-        fetchDonations();
-    }, [token]);
+        fetchDonations()
+    }, [token])
 
     const refreshDonations = async () => {
-        setLoading(true);
+        setLoading(true)
         try {
             const response = await axios.get('http://localhost:1135/api/donation', {
                 headers: { Authorization: `Bearer ${token}` },
             })
-            setDonations(response.data);
+            setDonations(response.data)
         } catch (err) {
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
-    };
+    }
 
     const exportToExcel = () => {
         const filteredDonations = donations.map(donation => ({
@@ -93,20 +93,20 @@ const GetAllDonations = () => {
             coinType: donation.coinType,
             event: donation.event,
             date: format(donation.donationDate, 'dd-MM-yy')
-        }));
-        const ws = XLSX.utils.json_to_sheet(filteredDonations);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, 'Donations');
-        const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-        const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
-        saveAs(data, 'donations.xlsx');
+        }))
+        const ws = XLSX.utils.json_to_sheet(filteredDonations)
+        const wb = XLSX.utils.book_new()
+        XLSX.utils.book_append_sheet(wb, ws, 'Donations')
+        const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' })
+        const data = new Blob([excelBuffer], { type: 'application/octet-stream' })
+        saveAs(data, 'donations.xlsx')
     }
 
-    const paginatorLeft = <Button type="button" onClick={refreshDonations} icon="pi pi-refresh" text />;
-    const paginatorRight = <Button type="button" onClick={exportToExcel} icon="pi pi-download" text />;
+    const paginatorLeft = <Button type="button" onClick={refreshDonations} icon="pi pi-refresh" text />
+    const paginatorRight = <Button type="button" onClick={exportToExcel} icon="pi pi-download" text />
 
     const donationDateFilterTemplate = (options) => {
-        const [from, to] = options.value ?? [null, null];
+        const [from, to] = options.value ?? [null, null]
         return (
             <div className="flex gap-2">
                 <Calendar
@@ -133,21 +133,19 @@ const GetAllDonations = () => {
             options={events}
             onChange={(e) => options.filterApplyCallback(e.value)}
             placeholder="Select Event"
-            className="p-column-filter" // PrimeReact class
+            className="p-column-filter" 
             showClear
         />
     )
-
     if (loading) {
-        return <p>Loading...</p>;
+        return <p>Loading...</p>
     }
 
     if (error) {
-        return <p>Error: {error}</p>;
+        return <p>Error: {error}</p>
     }
 
     return (<>
-        {/* הוסף את הקלאס donations-table-container לדיב "card" */}
         <div className="card donations-table-container">
             <DataTable
                 value={donations}
@@ -204,7 +202,7 @@ const GetAllDonations = () => {
         </div>
         <Visual></Visual>
     </>
-    );
-};
+    )
+}
 
-export default GetAllDonations;
+export default GetAllDonations

@@ -6,10 +6,10 @@ import axios from "axios"
 import { format } from 'date-fns'
 
 const RecentDonations = () => {
-    const { token, role, user } = useSelector((state) => state.token);
+    const { token, role, user } = useSelector((state) => state.token)
     const [donations, setDonations] = useState([])
-    const [loading, setLoading] = useState(true); // סטייט להציג טעינה
-    const [error, setError] = useState(null); // סטייט לטיפול בשגיאות
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
     useEffect(() => {
         const fetchDonations = async () => {
             try {
@@ -17,23 +17,23 @@ const RecentDonations = () => {
                 const formatDate = response.data.map(donation => ({
                     ...donation,
                     donationDate: format(new Date(donation.donationDate), 'yyyy-MM-dd') 
-                }));
-                setDonations(formatDate);
+                }))
+                setDonations(formatDate)
             } catch (err) {
-                setError(err.message); // שמירת הודעת השגיאה
+                setError(err.message)
             } finally {
-                setLoading(false); // סיום מצב הטעינה
+                setLoading(false)
 
             }
-        };
+        }
         fetchDonations()
     }, [user])
     if (loading) {
-        return <p>Loading...</p>; // הודעת טעינה
+        return <p>Loading...</p>
     }
 
     if (error) {
-        return <p>Error: {error}</p>; // הודעת שגיאה
+        return <p>Error: {error}</p>
     }
 
     return (
